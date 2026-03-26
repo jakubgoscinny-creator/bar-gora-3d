@@ -1582,7 +1582,7 @@ function renderComments(comments, filter) {
         <div class="comment-body">
           ${c.emoji ? `<span class="comment-emoji">${c.emoji}</span>` : ''}
           ${c.item ? `<span class="comment-tag">${c.item}</span>` : ''}
-          ${c.text}
+          ${c.text || ''}
           <div class="comment-meta">${timeAgo(c.date)}</div>
         </div>
       </div>
@@ -1611,7 +1611,7 @@ async function submitComment(initials, item, text, emoji) {
   const btn = document.getElementById('btn-add-comment');
   if (!_GH || _GH.length < 20) { statusEl.className = 'comment-status err'; statusEl.textContent = '⚠️ Token nie skonfigurowany'; return; }
   if (!initials.trim()) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Podaj inicjały (np. JK)'; return; }
-  if (!text.trim()) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Napisz coś w komentarzu 😊'; return; }
+  if (!text.trim() && !emoji) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Napisz coś lub wybierz emotkę 😊'; return; }
   btn.disabled = true;
   statusEl.className = 'comment-status';
   statusEl.textContent = '⏳ Zapisuję…';
@@ -1621,7 +1621,7 @@ async function submitComment(initials, item, text, emoji) {
     const newComment = {
       initials: initials.trim().toUpperCase().slice(0, 3),
       item: item || null,
-      text: text.trim().slice(0, 280),
+      text: text.trim().slice(0, 280) || null,
       emoji: emoji || null,
       date: new Date().toISOString()
     };
@@ -1630,7 +1630,7 @@ async function submitComment(initials, item, text, emoji) {
     const res = await fetch(API_URL, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
-      body: JSON.stringify({ message: `Komentarz: ${newComment.initials}${emoji ? ' '+emoji : ''} — ${text.slice(0,50)}`, content: encoded, sha: current.sha })
+      body: JSON.stringify({ message: `Komentarz: ${newComment.initials}${emoji ? ' '+emoji : ''}${text ? ' — '+text.slice(0,50) : ''}`, content: encoded, sha: current.sha })
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || `HTTP ${res.status}`); }
     _cache = null;

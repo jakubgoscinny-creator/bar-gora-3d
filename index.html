@@ -629,36 +629,11 @@
     <div class="sp-note">★ = rekomendowana opcja dla danej pozycji<br>Większość zakupów (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama dla elementów montażowych.</div>
   </div>
 
-  <!-- GŁOSOWANIA & KOMENTARZE -->
+  <!-- KOMENTARZE & GŁOSOWANIA -->
   <div class="sp-body" id="sp-komentarze" style="display:none">
 
-    <!-- POLLS -->
-    <div class="section-divider">📊 Głosowania</div>
-    <div id="polls-list"><div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center;">Ładowanie głosowań…</div></div>
-
-    <button class="btn-toggle-poll" id="btn-show-poll-form">+ Utwórz głosowanie</button>
-    <div class="create-poll-form" id="poll-form" style="display:none">
-      <div class="form-label">Twoje inicjały</div>
-      <input type="text" class="cf-input initials-input" id="p-initials" maxlength="3" placeholder="JK" autocomplete="off" style="margin-bottom:8px;width:64px;">
-      <div class="form-label" style="margin-top:4px;">Pytanie</div>
-      <input type="text" class="cf-input" id="p-question" placeholder="Który projekt wybieramy?" style="margin-bottom:8px;">
-      <div class="form-label">Opcje do wyboru</div>
-      <div class="poll-option-inputs">
-        <input type="text" class="cf-input" id="p-opt-0" placeholder="Projekt A — Strefa Zen">
-        <input type="text" class="cf-input" id="p-opt-1" placeholder="Projekt B — Hamaki">
-        <input type="text" class="cf-input" id="p-opt-2" placeholder="Opcja 3 (opcjonalnie)">
-        <input type="text" class="cf-input" id="p-opt-3" placeholder="Opcja 4 (opcjonalnie)">
-      </div>
-      <div class="poll-date-row">
-        <label>Głosowanie do:</label>
-        <input type="date" class="cf-input" id="p-end-date" style="flex:1;">
-      </div>
-      <button class="btn-poll" id="btn-create-poll">Utwórz głosowanie →</button>
-      <div class="comment-status" id="poll-status"></div>
-    </div>
-
     <!-- COMMENTS -->
-    <div class="section-divider" style="margin-top:24px;">💬 Komentarze</div>
+    <div class="section-divider">💬 Komentarze</div>
     <div class="comments-filter" id="comments-filter">
       <button class="cmt-filter-btn active" data-filter="all">Wszystkie</button>
     </div>
@@ -709,6 +684,31 @@
       </div>
       <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz →</button>
       <div class="comment-status" id="comment-status"></div>
+    </div>
+
+    <!-- POLLS -->
+    <div class="section-divider" style="margin-top:24px;">📊 Głosowania</div>
+    <div id="polls-list"><div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center;">Ładowanie głosowań…</div></div>
+
+    <button class="btn-toggle-poll" id="btn-show-poll-form">+ Utwórz głosowanie</button>
+    <div class="create-poll-form" id="poll-form" style="display:none">
+      <div class="form-label">Twoje inicjały</div>
+      <input type="text" class="cf-input initials-input" id="p-initials" maxlength="3" placeholder="JK" autocomplete="off" style="margin-bottom:8px;width:64px;">
+      <div class="form-label" style="margin-top:4px;">Pytanie</div>
+      <input type="text" class="cf-input" id="p-question" placeholder="Który projekt wybieramy?" style="margin-bottom:8px;">
+      <div class="form-label">Opcje do wyboru</div>
+      <div class="poll-option-inputs">
+        <input type="text" class="cf-input" id="p-opt-0" placeholder="Projekt A — Strefa Zen">
+        <input type="text" class="cf-input" id="p-opt-1" placeholder="Projekt B — Hamaki">
+        <input type="text" class="cf-input" id="p-opt-2" placeholder="Opcja 3 (opcjonalnie)">
+        <input type="text" class="cf-input" id="p-opt-3" placeholder="Opcja 4 (opcjonalnie)">
+      </div>
+      <div class="poll-date-row">
+        <label>Głosowanie do:</label>
+        <input type="date" class="cf-input" id="p-end-date" style="flex:1;">
+      </div>
+      <button class="btn-poll" id="btn-create-poll">Utwórz głosowanie →</button>
+      <div class="comment-status" id="poll-status"></div>
     </div>
   </div>
 </div>

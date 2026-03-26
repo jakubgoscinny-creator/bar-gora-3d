@@ -67,6 +67,82 @@
     transition: all 0.18s; letter-spacing: 0.2px;
   }
   .dbtn.active { background: #222; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+
+  /* ── SHOPPING BUTTON ── */
+  #btn-shop {
+    position: absolute; bottom: 56px; left: 16px;
+    background: #222; color: #fff; border: none;
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+    transition: background 0.15s; letter-spacing: 0.2px;
+  }
+  #btn-shop:hover { background: #444; }
+
+  /* ── SHOPPING PANEL ── */
+  #shop-panel {
+    display: none; position: absolute; top: 0; right: 0; bottom: 0;
+    width: 400px; background: rgba(255,255,255,0.97);
+    box-shadow: -4px 0 32px rgba(0,0,0,0.18);
+    overflow-y: auto; font-size: 12.5px; line-height: 1.6; color: #333;
+    z-index: 10;
+  }
+  #shop-panel.open { display: block; }
+  .sp-head {
+    position: sticky; top: 0; background: #fff;
+    padding: 16px 20px 12px; border-bottom: 1px solid #eee;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 2;
+  }
+  .sp-head h2 { font-size: 15px; color: #111; margin: 0; }
+  #btn-shop-close {
+    background: none; border: none; font-size: 20px;
+    cursor: pointer; color: #888; line-height: 1; padding: 2px 6px;
+  }
+  #btn-shop-close:hover { color: #222; }
+  .sp-tabs {
+    display: flex; gap: 0; padding: 10px 20px 0;
+    border-bottom: 2px solid #eee;
+  }
+  .sp-tab {
+    padding: 7px 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border: none; background: none;
+    color: #999; border-bottom: 2px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+  }
+  .sp-tab.active { color: #111; border-bottom-color: #222; }
+  .sp-body { padding: 14px 20px 24px; }
+  .sp-section {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
+    text-transform: uppercase; color: #888; margin: 16px 0 8px;
+  }
+  .sp-item {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f0; gap: 8px;
+  }
+  .sp-item:last-child { border-bottom: none; }
+  .sp-name { flex: 1; color: #333; }
+  .sp-name small { display: block; color: #999; font-size: 11px; margin-top: 1px; }
+  .sp-price { font-weight: 700; color: #111; white-space: nowrap; }
+  .sp-links { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+  .sp-link {
+    font-size: 10px; padding: 2px 7px; border-radius: 4px;
+    text-decoration: none; font-weight: 600;
+  }
+  .sp-link.cast { background: #fff3e0; color: #e65100; }
+  .sp-link.alle { background: #fff8e1; color: #f57f17; }
+  .sp-link.amaz { background: #e8f5e9; color: #2e7d32; }
+  .sp-link:hover { opacity: 0.75; }
+  .sp-total {
+    margin-top: 20px; padding: 14px 16px; background: #f7f7f5;
+    border-radius: 10px; display: flex; justify-content: space-between;
+    align-items: center;
+  }
+  .sp-total span { font-size: 14px; font-weight: 800; color: #111; }
+  .sp-note {
+    font-size: 11px; color: #888; background: #fafafa;
+    border-left: 3px solid #ddd; padding: 8px 10px;
+    margin-top: 12px; border-radius: 0 6px 6px 0;
+  }
 </style>
 </head>
 <body>
@@ -128,6 +204,193 @@
   <button class="vbtn" id="btn-duzy">Duży pokój</button>
   <button class="vbtn" id="btn-schody">Schody</button>
   <button class="vbtn" id="btn-top">Z góry</button>
+</div>
+
+<button id="btn-shop">🛒 Lista zakupowa</button>
+
+<div id="shop-panel">
+  <div class="sp-head">
+    <h2>Lista zakupowa</h2>
+    <button id="btn-shop-close">✕</button>
+  </div>
+  <div class="sp-tabs">
+    <button class="sp-tab active" data-tab="a">🛏 Projekt A</button>
+    <button class="sp-tab" data-tab="b">🪢 Projekt B</button>
+    <button class="sp-tab" data-tab="wspolne">Wspólne</button>
+  </div>
+
+  <!-- PROJEKT A -->
+  <div class="sp-body" id="sp-a">
+    <div class="sp-section">Projekt A — Strefa Zen</div>
+
+    <div class="sp-item">
+      <div class="sp-name">Mata piankowa T35 na wymiar<small>292×347×20 cm — zamów u producenta z wymiarami</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=pianka+poliuretanowa+na+wymiar+20cm" target="_blank">Allegro</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=topper+piankowy+200x200+20cm" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~450 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Pokrowiec na matę<small>2× prześcieradło elastyczne 200×200 cm</small>
+        <div class="sp-links">
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=prze%C5%9Bcieradlo+elastyczne+200x200" target="_blank">Amazon</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=prze%C5%9Bcieradlo+elastyczne+200x200+jersey" target="_blank">Allegro</a>
+        </div>
+      </div>
+      <div class="sp-price">~140 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">6× poduszka lounge 70×70 cm<small>bawełna, beż/taupe — szukaj zestawów 3-pak</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+du%C5%BCa+70x70+bawelna" target="_blank">Allegro</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+70x70+naturalna" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~480 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">3× poduszka oparciowa 80×65 cm<small>przy tylnej ścianie, styl zazen</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+oparciowa+du%C5%BCa+80cm+pod%C5%82oga" target="_blank">Allegro</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+oparciowa+pod%C5%82oga+80cm" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~270 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">2× wałek dekoracyjny bolster 60 cm<small>okrągły, bawełniany</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga+60cm" target="_blank">Allegro</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~110 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=skrzynia+keter" target="_blank">Castorama</a>
+        </div>
+      </div>
+      <div class="sp-price">~350 zł</div>
+    </div>
+
+    <div class="sp-total">
+      <span>💰 Suma Projekt A</span>
+      <span>~1 800 zł</span>
+    </div>
+    <div class="sp-note">★ Mata piankowa: podaj wymiary 292×347 cm przy zamówieniu, gęstość T35 (35 kg/m³)</div>
+  </div>
+
+  <!-- PROJEKT B -->
+  <div class="sp-body" id="sp-b" style="display:none">
+    <div class="sp-section">Projekt B — Hamaki &amp; Fotel Brazylijki</div>
+
+    <div class="sp-item">
+      <div class="sp-name">2× hamak brazylijski tkany bawełniany<small>bez drążków, ~200×90 cm — "hamak siodełkowy tkany"</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=hamak+brazylijski+tkany+bawelniany+bez+dr%C4%85%C5%BCk%C3%B3w" target="_blank">Allegro ★</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hamak+ogrodowy+bawelniany" target="_blank">Castorama</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=hamak+brazylijski+tkany+bez+dra%C5%BCk%C3%B3w" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~260 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">4× śruba oczkowa M10 + karabińczyki<small>kotwice do krokwi — wkręć w krokwie, min. 60 mm głębokości</small>
+        <div class="sp-links">
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=%C5%9Bruba+oczkowa+m10+ocynkowana" target="_blank">Castorama ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=uchwyt+do+hamaka+zestaw+stalowy+150kg" target="_blank">Allegro</a>
+        </div>
+      </div>
+      <div class="sp-price">~100 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Fotel brazylijki wiszący tkany<small>bawełna, bez stojaka — montaż na hak w krokwi kalenicy</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=fotel+brazylijki+wiszacy+tkanina+bawelna" target="_blank">Allegro ★</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=fotel+wiszacy+ogrodowy" target="_blank">Castorama</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=fotel+wiszacy+hamakowy+tkany+brazylijski" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~320 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Hak sufitowy M10 + obrotnica 360°<small>nośność min. 150 kg — do kalenicy małego pokoju</small>
+        <div class="sp-links">
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hak+sufitowy+obrotnica+360" target="_blank">Castorama ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=obrotnica+360+fotel+wiszacy+M10+150kg" target="_blank">Allegro</a>
+        </div>
+      </div>
+      <div class="sp-price">~60 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">10× poduszka podłogowa 65×65 cm<small>oliwkowa/zielona boho — szukaj zestawów 3-pak</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+65x65+oliwkowa+boho" target="_blank">Allegro ★</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+lounge+65cm+bawelna" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~700 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Zestaw poduszek do fotela<small>siedzenie + oparcie do fotela wiszącego</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszki+do+fotela+wiszacego+brazylijki+zestaw" target="_blank">Allegro ★</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+fotel+wiszacy+hamakowy+wymiana" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~110 zł</div>
+    </div>
+
+    <div class="sp-item">
+      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
+        <div class="sp-links">
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
+          <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
+        </div>
+      </div>
+      <div class="sp-price">~350 zł</div>
+    </div>
+
+    <div class="sp-total">
+      <span>💰 Suma Projekt B</span>
+      <span>~1 900 zł</span>
+    </div>
+    <div class="sp-note">⚠️ Kotwy hamaków i hak fotela muszą być wkręcone w krokwie drewniane (co ~63 cm), nie w deskowanie!</div>
+  </div>
+
+  <!-- WSPÓLNE -->
+  <div class="sp-body" id="sp-wspolne" style="display:none">
+    <div class="sp-section">Porównanie projektów</div>
+    <div class="sp-item"><div class="sp-name">Projekt A — Strefa Zen</div><div class="sp-price">~1 800 zł</div></div>
+    <div class="sp-item"><div class="sp-name">Projekt B — Hamaki &amp; Relaks</div><div class="sp-price">~1 900 zł</div></div>
+    <div class="sp-section">Różnica</div>
+    <div class="sp-item"><div class="sp-name">Projekty zbliżone cenowo</div><div class="sp-price">~100 zł</div></div>
+    <div class="sp-section">Sklep główny</div>
+    <div class="sp-item">
+      <div class="sp-name">Castorama Bydgoszcz Szubińska<small>śruby oczkowe, karabińczyki, haki — elementy montażowe</small>
+        <div class="sp-links">
+          <a class="sp-link cast" href="https://www.castorama.pl/sklepy/bydgoszcz-szubinska.html" target="_blank">Castorama ↗</a>
+        </div>
+      </div>
+    </div>
+    <div class="sp-note">★ = rekomendowana opcja dla danej pozycji<br>Większość zakupów (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama przydatna dla elementów montażowych (śruby M10, karabińczyki, haki).</div>
+  </div>
 </div>
 
 <div id="controls">LPM + przeciąganie = obrót &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesunięcie</div>
@@ -905,6 +1168,24 @@ function flyTo(preset) {
   }
   step();
 }
+
+// ─── SHOPPING PANEL ──────────────────────────────────────────────────────
+document.getElementById('btn-shop').onclick = () => {
+  document.getElementById('shop-panel').classList.toggle('open');
+};
+document.getElementById('btn-shop-close').onclick = () => {
+  document.getElementById('shop-panel').classList.remove('open');
+};
+document.querySelectorAll('.sp-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const t = tab.dataset.tab;
+    ['a','b','wspolne'].forEach(id => {
+      document.getElementById('sp-' + id).style.display = (id === t) ? '' : 'none';
+    });
+  };
+});
 
 // ─── DESIGN TOGGLE ───────────────────────────────────────────────────────
 document.getElementById('btn-da').onclick = () => {

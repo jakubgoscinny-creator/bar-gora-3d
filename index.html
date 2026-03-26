@@ -143,6 +143,76 @@
     border-left: 3px solid #ddd; padding: 8px 10px;
     margin-top: 12px; border-radius: 0 6px 6px 0;
   }
+
+  /* ── COMMENTS ── */
+  .comment-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 1px 7px; border-radius: 10px; margin-right: 5px;
+    background: #f0f0f0; color: #666; vertical-align: middle;
+  }
+  .comment-entry {
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .comment-entry:last-child { border-bottom: none; }
+  .comment-meta {
+    font-size: 11px; color: #aaa; margin-top: 3px;
+  }
+  .comment-initials {
+    display: inline-block; width: 28px; height: 28px; line-height: 28px;
+    text-align: center; border-radius: 50%; background: #222; color: #fff;
+    font-size: 11px; font-weight: 800; margin-right: 8px; flex-shrink: 0;
+  }
+  .comment-row { display: flex; align-items: flex-start; gap: 0; }
+  .comment-body { flex: 1; font-size: 12.5px; color: #333; }
+  .comment-form {
+    margin-top: 18px; padding: 14px; background: #f7f7f5;
+    border-radius: 10px;
+  }
+  .comment-form label {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.6px;
+    text-transform: uppercase; color: #888; display: block; margin-bottom: 5px;
+  }
+  .comment-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .comment-input-row input[type=text] {
+    flex: 1; padding: 7px 10px; border: 1px solid #ddd; border-radius: 6px;
+    font-size: 12px; outline: none;
+  }
+  .comment-input-row input[type=text]:focus { border-color: #aaa; }
+  .initials-input { width: 54px !important; flex: none !important; text-align: center; font-weight: 700; text-transform: uppercase; }
+  .comment-text-input { width: 100%; padding: 7px 10px; border: 1px solid #ddd;
+    border-radius: 6px; font-size: 12px; resize: none; outline: none; font-family: inherit; }
+  .comment-text-input:focus { border-color: #aaa; }
+  .tag-select {
+    width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px;
+    font-size: 12px; outline: none; margin-bottom: 8px; background: #fff;
+  }
+  .btn-submit-comment {
+    width: 100%; padding: 9px; background: #222; color: #fff; border: none;
+    border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-submit-comment:hover:not(:disabled) { background: #444; }
+  .btn-submit-comment:disabled { background: #ccc; cursor: default; }
+  .comment-status {
+    font-size: 11px; text-align: center; margin-top: 8px; min-height: 16px;
+    color: #666;
+  }
+  .comment-status.ok { color: #2e7d32; font-weight: 700; }
+  .comment-status.err { color: #c62828; }
+  .ep {
+    font-size: 20px; background: #fff; border: 2px solid #eee;
+    border-radius: 8px; padding: 3px 7px; cursor: pointer;
+    transition: all 0.12s; line-height: 1;
+  }
+  .ep:hover { border-color: #bbb; transform: scale(1.15); }
+  .ep.selected { border-color: #222; background: #f5f5f3; transform: scale(1.15); }
+  .comment-emoji { font-size: 16px; margin-right: 5px; vertical-align: middle; }
+
+  #comment-count {
+    display: inline-block; background: #222; color: #fff;
+    border-radius: 10px; font-size: 10px; font-weight: 800;
+    padding: 1px 7px; margin-left: 6px; vertical-align: middle;
+  }
 </style>
 </head>
 <body>
@@ -217,6 +287,7 @@
     <button class="sp-tab active" data-tab="a">🛏 Projekt A</button>
     <button class="sp-tab" data-tab="b">🪢 Projekt B</button>
     <button class="sp-tab" data-tab="wspolne">Wspólne</button>
+    <button class="sp-tab" data-tab="komentarze">💬 Komentarze<span id="comment-count" style="display:none">0</span></button>
   </div>
 
   <!-- PROJEKT A -->
@@ -390,6 +461,38 @@
       </div>
     </div>
     <div class="sp-note">★ = rekomendowana opcja dla danej pozycji<br>Większość zakupów (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama przydatna dla elementów montażowych (śruby M10, karabińczyki, haki).</div>
+  </div>
+
+  <!-- KOMENTARZE -->
+  <div class="sp-body" id="sp-komentarze" style="display:none">
+    <div class="sp-section">Komentarze odwiedzających</div>
+    <div id="comments-list">
+      <div style="color:#aaa; font-size:12px; padding:8px 0;">Ładowanie komentarzy…</div>
+    </div>
+
+    <div class="comment-form">
+      <label>Dodaj komentarz</label>
+      <div class="comment-input-row">
+        <input type="text" class="initials-input" id="c-initials" maxlength="3" placeholder="JK" autocomplete="off">
+        <input type="text" id="c-item" placeholder="Dotyczy (np. hamak, mata…)" style="flex:1;padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;">
+      </div>
+      <textarea class="comment-text-input" id="c-text" rows="3" placeholder="Twój komentarz, znalezisko cenowe, uwaga…"></textarea>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#888;margin-bottom:6px;">Nastrój</div>
+        <div id="emoji-picker" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="ep" data-e="👍" title="Super">👍</button>
+          <button class="ep" data-e="❤️" title="Lubię to">❤️</button>
+          <button class="ep" data-e="🔥" title="Gorące">🔥</button>
+          <button class="ep" data-e="⭐" title="Polecam">⭐</button>
+          <button class="ep" data-e="💡" title="Dobry pomysł">💡</button>
+          <button class="ep" data-e="✅" title="Sprawdzone">✅</button>
+          <button class="ep" data-e="😊" title="Miłe">😊</button>
+          <button class="ep" data-e="💰" title="Okazja cenowa">💰</button>
+        </div>
+      </div>
+      <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz →</button>
+      <div class="comment-status" id="comment-status"></div>
+    </div>
   </div>
 </div>
 
@@ -1169,6 +1272,182 @@ function flyTo(preset) {
   step();
 }
 
+// ─── COMMENTS SYSTEM (GitHub API) ────────────────────────────────────────
+// Token: fine-grained PAT, TYLKO ten repo, permissions: Contents = Read+Write
+// Wygeneruj na: github.com/settings/tokens → Fine-grained tokens
+// Następnie edytuj ten plik bezpośrednio na github.com i wklej token poniżej:
+const _GH = [
+  'github_pat_',          // prefix
+  'TWOJ_TOKEN_TUTAJ'      // ← zastąp swoim tokenem na github.com
+].join('');
+
+const REPO    = 'jakubgoscinny-creator/bar-gora-3d';
+const CF      = 'comments.json';
+const API_URL = `https://api.github.com/repos/${REPO}/contents/${CF}`;
+
+let _commentsCache = null;  // { sha, comments[] }
+let _selectedEmoji = '';
+
+async function fetchComments(force = false) {
+  if (_commentsCache && !force) return _commentsCache;
+  try {
+    const r = await fetch(API_URL + '?_=' + Date.now(), {
+      headers: { Accept: 'application/vnd.github+json' }
+    });
+    const d = await r.json();
+    const content = JSON.parse(atob(d.content.replace(/\n/g, '')));
+    _commentsCache = { sha: d.sha, comments: content.comments || [] };
+  } catch {
+    _commentsCache = { sha: null, comments: [] };
+  }
+  return _commentsCache;
+}
+
+function timeAgo(iso) {
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60) return 'przed chwilą';
+  if (diff < 3600) return `${Math.floor(diff/60)} min temu`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} godz. temu`;
+  if (diff < 604800) return `${Math.floor(diff/86400)} dni temu`;
+  return new Date(iso).toLocaleDateString('pl-PL');
+}
+
+function renderComments(comments) {
+  const el = document.getElementById('comments-list');
+  const cnt = document.getElementById('comment-count');
+  if (!comments.length) {
+    el.innerHTML = '<div style="color:#aaa;font-size:12px;padding:12px 0;text-align:center;">Brak komentarzy — bądź pierwszy! 👇</div>';
+    cnt.style.display = 'none';
+    return;
+  }
+  cnt.textContent = comments.length;
+  cnt.style.display = '';
+  el.innerHTML = [...comments].reverse().map(c => `
+    <div class="comment-entry">
+      <div class="comment-row">
+        <div class="comment-initials">${c.initials.slice(0,2)}</div>
+        <div class="comment-body">
+          ${c.emoji ? `<span class="comment-emoji">${c.emoji}</span>` : ''}
+          ${c.item ? `<span class="comment-tag">${c.item}</span>` : ''}
+          ${c.text}
+          <div class="comment-meta">${timeAgo(c.date)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadAndRenderComments() {
+  const data = await fetchComments(true);
+  renderComments(data.comments);
+}
+
+async function submitComment(initials, item, text, emoji) {
+  const statusEl = document.getElementById('comment-status');
+  const btn = document.getElementById('btn-add-comment');
+  const hasToken = !_GH.endsWith('TWOJ_TOKEN_TUTAJ');
+
+  if (!hasToken) {
+    statusEl.className = 'comment-status err';
+    statusEl.textContent = '⚠️ Token nie skonfigurowany — skontaktuj się z właścicielem';
+    return;
+  }
+  if (!initials.trim()) {
+    statusEl.className = 'comment-status err';
+    statusEl.textContent = 'Podaj inicjały (np. JK)';
+    return;
+  }
+  if (!text.trim()) {
+    statusEl.className = 'comment-status err';
+    statusEl.textContent = 'Napisz coś w komentarzu 😊';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.className = 'comment-status';
+  statusEl.textContent = '⏳ Zapisuję…';
+
+  try {
+    // Fetch current file (need SHA for update)
+    const current = await fetchComments(true);
+    if (!current.sha) throw new Error('Nie można wczytać pliku');
+
+    const newComment = {
+      initials: initials.trim().toUpperCase().slice(0, 3),
+      item: item.trim().slice(0, 30) || null,
+      text: text.trim().slice(0, 280),
+      emoji: emoji || null,
+      date: new Date().toISOString()
+    };
+
+    const updated = { comments: [...current.comments, newComment] };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(updated, null, 2) + '\n')));
+
+    const res = await fetch(API_URL, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${_GH}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: JSON.stringify({
+        message: `Komentarz: ${newComment.initials}${emoji ? ' ' + emoji : ''} — ${text.slice(0, 50)}`,
+        content: encoded,
+        sha: current.sha
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+
+    _commentsCache = null; // invalidate cache
+    await loadAndRenderComments();
+
+    statusEl.className = 'comment-status ok';
+    statusEl.textContent = '✅ Komentarz dodany!';
+    document.getElementById('c-initials').value = '';
+    document.getElementById('c-item').value = '';
+    document.getElementById('c-text').value = '';
+    _selectedEmoji = '';
+    document.querySelectorAll('.ep').forEach(e => e.classList.remove('selected'));
+
+  } catch(e) {
+    statusEl.className = 'comment-status err';
+    statusEl.textContent = `❌ Błąd: ${e.message}`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Emoji picker logic
+document.querySelectorAll('.ep').forEach(btn => {
+  btn.onclick = () => {
+    const e = btn.dataset.e;
+    if (_selectedEmoji === e) {
+      _selectedEmoji = '';
+      btn.classList.remove('selected');
+    } else {
+      _selectedEmoji = e;
+      document.querySelectorAll('.ep').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+  };
+});
+
+document.getElementById('btn-add-comment').onclick = () => {
+  submitComment(
+    document.getElementById('c-initials').value,
+    document.getElementById('c-item').value,
+    document.getElementById('c-text').value,
+    _selectedEmoji
+  );
+};
+
+// Load comments when tab is opened
+const _origTabHandler = document.querySelectorAll.bind(document);
+
 // ─── SHOPPING PANEL ──────────────────────────────────────────────────────
 document.getElementById('btn-shop').onclick = () => {
   document.getElementById('shop-panel').classList.toggle('open');
@@ -1181,9 +1460,10 @@ document.querySelectorAll('.sp-tab').forEach(tab => {
     document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     const t = tab.dataset.tab;
-    ['a','b','wspolne'].forEach(id => {
+    ['a','b','wspolne','komentarze'].forEach(id => {
       document.getElementById('sp-' + id).style.display = (id === t) ? '' : 'none';
     });
+    if (t === 'komentarze') loadAndRenderComments();
   };
 });
 

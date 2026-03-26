@@ -1,1 +1,12 @@
-{"comments":[],"polls":[]}
+{
+  "comments": [
+    {
+      "initials": "TS",
+      "item": "Hamaki (B)",
+      "text": "Testujemy polskie znaki: żółć, ąęźć 🎉",
+      "emoji": "❤️",
+      "date": "2026-03-26T23:40:43.513Z"
+    }
+  ],
+  "polls": []
+}

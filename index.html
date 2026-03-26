@@ -73,7 +73,7 @@
   <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
 
   <div class="section">Wyposażenie (duży pokój)</div>
-  <div class="dim">Mata piankowa: <b>3 × 3 m × 22 cm</b></div>
+  <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
   <div class="dim">Poduszki dekoracyjne</div>
   <div class="dim">Kufer na kołdry</div>
 </div>
@@ -82,8 +82,8 @@
   <h3>Legenda</h3>
   <div><span class="dot" style="background:#f8f6f0;"></span> Ściany i sufit (białe)</div>
   <div><span class="dot" style="background:#b4b2ac;"></span> Podłoga (szara)</div>
-  <div><span class="dot" style="background:#edead8;"></span> Mata piankowa 3×3 m</div>
-  <div><span class="dot" style="background:#e2c4a0;"></span> Poduszki</div>
+  <div><span class="dot" style="background:#f2efe0;"></span> Mata piankowa (cała podłoga)</div>
+  <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + wałki</div>
   <div><span class="dot" style="background:#7a5a38;"></span> Kufer na kołdry</div>
   <div><span class="dot" style="background:#c8ccd4;"></span> Schody</div>
   <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
@@ -364,42 +364,95 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   tube([W - px, py, 0], [W - px, py, LT], 0.02, rafterMat);
 }
 
-// ─── FOAM MAT (mata piankowa 3×3 m × 22 cm) ─────────────────────────────
+// ─── FOAM MAT — pokrywa całą podłogę dużego pokoju ───────────────────────
 {
-  const FW = 2.90; // 3m capped to room width
-  const FL = 3.00;
-  const FH = 0.22;
-  // Center in big room, slight gap from front wall
-  const fz = 0.30 + FL / 2; // starts 30cm from front wall
+  const FW = W;    // pełna szerokość podłogi 2.92 m
+  const FL = L1;   // pełna długość pokoju 3.47 m
+  const FH = 0.22; // grubość 22 cm
+  const fz = FL / 2;
   box(FW, FH, FL, foamMat, CX, FH / 2, fz);
 
-  // Foam edge highlight (thin lighter strip on top)
-  const edgeMat = new THREE.MeshStandardMaterial({color:0xf5f2e2, roughness:0.95});
-  box(FW, 0.01, FL, edgeMat, CX, FH + 0.005, fz);
+  // Miękka górna powierzchnia (lekko jaśniejsza)
+  const topMat = new THREE.MeshStandardMaterial({color:0xf2efe0, roughness:0.97});
+  box(FW, 0.008, FL, topMat, CX, FH + 0.004, fz);
 
-  // ─── CUSHIONS ──────────────────────────────────────────────────────────
-  const cushPos = [
-    [CX - 1.0, FH + 0.13, 0.55],
-    [CX - 0.3, FH + 0.13, 0.48],
-    [CX + 0.5, FH + 0.13, 0.52],
-    [CX + 1.0, FH + 0.13, 0.60],
-    [CX - 0.7, FH + 0.13, 1.00],
-    [CX + 0.7, FH + 0.14, 0.95],
+  // Obszywka — boczne lamówki pianki (ciemniejszy pasek na krawędziach)
+  const seamMat = new THREE.MeshStandardMaterial({color:0xd8d4c4, roughness:0.85});
+  const seamH = 0.018;
+  // przednia i tylna krawędź
+  box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, 0.011);
+  box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, FL - 0.011);
+  // boczne krawędzie
+  box(0.022, seamH, FL, seamMat, 0.011, FH - seamH/2, fz);
+  box(0.022, seamH, FL, seamMat, W - 0.011, FH - seamH/2, fz);
+
+  // ─── PODUSZKI DUŻE I FAJNE ─────────────────────────────────────────────
+  // Poduszki podłogowe (japoński styl zazen / lounge)
+  const FT = FH; // top of foam = 0.22
+
+  // Definicje: [x, z, rotY, w, h, d, color, type]
+  // type: 'square'=kwadrat, 'bolster'=wałek, 'round'=okrągła
+  const cushions = [
+    // Rząd 1 — przy przedniej ścianie, duże kwadraty
+    { x: 0.60, z: 0.42, ry: 0.08,  w: 0.70, h: 0.28, d: 0.70, color: 0xc9b99a },
+    { x: 1.46, z: 0.38, ry: -0.05, w: 0.72, h: 0.30, d: 0.72, color: 0xb8a88e },
+    { x: 2.30, z: 0.44, ry: 0.10,  w: 0.68, h: 0.27, d: 0.68, color: 0xd4c4a8 },
+
+    // Rząd 2 — środkowe, luźno rozrzucone
+    { x: 0.50, z: 1.20, ry: -0.15, w: 0.75, h: 0.32, d: 0.75, color: 0xa89880 },
+    { x: 1.80, z: 1.10, ry: 0.12,  w: 0.78, h: 0.34, d: 0.78, color: 0xc0b098 },
+
+    // Rząd 3 — duże poduszki oparciowe przy ścianie tylnej
+    { x: 0.55, z: 2.80, ry: 0.06,  w: 0.65, h: 0.60, d: 0.28, color: 0xb0a890, wall: true },
+    { x: 1.46, z: 2.85, ry: 0.00,  w: 0.80, h: 0.65, d: 0.28, color: 0xa09880, wall: true },
+    { x: 2.38, z: 2.80, ry: -0.06, w: 0.65, h: 0.60, d: 0.28, color: 0xbcac98, wall: true },
+
+    // Wałki dekoracyjne (bolsters)
+    { x: 1.05, z: 0.68, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.62, color: 0xd8c8b0, round: true },
+    { x: 1.90, z: 0.72, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.60, color: 0xc8b8a0, round: true },
   ];
-  const cushSizes = [
-    [0.48, 0.22, 0.44],
-    [0.42, 0.20, 0.40],
-    [0.44, 0.22, 0.42],
-    [0.46, 0.21, 0.44],
-    [0.52, 0.24, 0.48],
-    [0.44, 0.22, 0.42],
-  ];
-  const cushRots = [0.1, -0.08, 0.05, -0.12, 0.15, -0.06];
-  cushPos.forEach((p, i) => {
-    const mat = new THREE.MeshStandardMaterial({
-      color: cushColors[i], roughness: 0.92
-    });
-    box(cushSizes[i][0], cushSizes[i][1], cushSizes[i][2], mat, p[0], p[1], p[2], cushRots[i]);
+
+  cushions.forEach(c => {
+    const mat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.90 });
+    const py = c.wall ? FT + c.h/2 : FT + c.h/2;
+    const pz = c.wall ? c.z - c.d/2 : c.z;
+
+    if (c.round) {
+      // Wałek — użyj CylinderGeometry
+      const geo = new THREE.CylinderGeometry(c.h/2, c.h/2, c.d, 16);
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(c.x, FT + c.h/2, c.z);
+      m.rotation.z = Math.PI/2;
+      m.rotation.y = c.ry;
+      m.castShadow = true; m.receiveShadow = true;
+      scene.add(m);
+      // Zaślepki na końcach wałka
+      const capMat = new THREE.MeshStandardMaterial({ color: c.color - 0x101010, roughness: 0.85 });
+      const capGeo = new THREE.CircleGeometry(c.h/2, 16);
+      [-c.d/2, c.d/2].forEach(dx => {
+        const cap = new THREE.Mesh(capGeo, capMat);
+        cap.position.set(c.x + dx * Math.cos(c.ry), FT + c.h/2, c.z - dx * Math.sin(c.ry));
+        cap.rotation.set(0, c.ry + Math.PI/2, 0);
+        scene.add(cap);
+      });
+    } else {
+      // Poduszka kwadratowa / oparciowa
+      const m = box(c.w, c.h, c.d, mat, c.x, py, pz, c.ry);
+
+      // Fajny szew przez środek poduszki (dekoracyjny)
+      const seamLineMat = new THREE.MeshStandardMaterial({ color: c.color - 0x181818, roughness: 0.95 });
+      if (!c.wall) {
+        // Szew poziomy na górze
+        box(c.w - 0.04, 0.012, 0.018, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
+        box(0.018, 0.012, c.d - 0.04, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
+        // Lekkie wypuklenie środka (tufting effect)
+        const tufMat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.92 });
+        box(c.w * 0.55, c.h * 0.08, c.d * 0.55, tufMat, c.x, py + c.h/2 + 0.01, pz, c.ry);
+      } else {
+        // Szew pionowy na poduszce oparciowej
+        box(0.018, c.h - 0.04, 0.012, seamLineMat, c.x, py, pz + c.d/2 + 0.006, c.ry);
+      }
+    }
   });
 }
 

@@ -1,502 +1,698 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
-<title>Bar GÃ³ra â Model 3D</title>
+<title>Bar Góra — Model 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg:       #c0b9ae;
+    --panel:    #faf8f5;
+    --border:   #e2dbd1;
+    --text:     #1c1916;
+    --muted:    #8a8078;
+    --accent:   #3c2f22;
+    --amber:    #c4733a;
+    --green:    #4a7c59;
+    --r:        13px;
+    --sh:       0 4px 28px rgba(28,25,22,.13);
+    --ff-title: 'Lora', Georgia, serif;
+    --ff-body:  'Nunito', 'Segoe UI', sans-serif;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; background: #dce8f4; font-family: 'Segoe UI', sans-serif; }
+  body { overflow: hidden; background: var(--bg); font-family: var(--ff-body); color: var(--text); }
   canvas { display: block; }
 
+  /* ── INFO PANEL ── */
   #info {
-    position: absolute; top: 16px; left: 16px;
-    background: rgba(255,255,255,0.93); color: #333;
-    padding: 16px 20px; border-radius: 12px;
-    font-size: 12.5px; line-height: 1.8;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.13); max-width: 240px;
+    position: absolute; top: 18px; left: 18px;
+    background: var(--panel); padding: 18px 22px;
+    border-radius: var(--r); font-size: 12px; line-height: 1.85;
+    box-shadow: var(--sh); max-width: 250px;
+    border-top: 3px solid var(--amber);
   }
-  #info h2 { font-size: 15px; margin-bottom: 6px; color: #111; font-weight: 700; }
+  #info h2 {
+    font-family: var(--ff-title); font-size: 16px; margin-bottom: 8px;
+    color: var(--accent); font-weight: 700; letter-spacing: -0.2px;
+  }
   #info .section {
-    font-weight: 700; color: #666; margin-top: 10px; margin-bottom: 2px;
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px;
+    font-weight: 700; color: var(--amber); margin-top: 12px; margin-bottom: 3px;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1.3px;
   }
-  #info .dim { color: #444; }
-  #info b { color: #222; }
+  #info .dim { color: var(--muted); }
+  #info b { color: var(--text); font-weight: 600; }
 
+  /* ── LEGEND ── */
   #legend {
-    position: absolute; top: 16px; right: 16px;
-    background: rgba(255,255,255,0.93);
-    padding: 14px 18px; border-radius: 12px;
-    font-size: 12px; line-height: 2.1;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    position: absolute; top: 18px; right: 18px;
+    background: var(--panel); padding: 14px 18px;
+    border-radius: var(--r); font-size: 11.5px; line-height: 2.2;
+    box-shadow: var(--sh);
   }
-  #legend h3 { font-size: 13px; margin-bottom: 4px; color: #222; font-weight: 700; }
+  #legend h3 {
+    font-family: var(--ff-title); font-size: 12.5px; margin-bottom: 4px;
+    color: var(--accent); font-weight: 700;
+  }
   .dot {
-    display: inline-block; width: 11px; height: 11px;
-    border-radius: 2px; margin-right: 7px; vertical-align: middle;
-    border: 1px solid rgba(0,0,0,0.08);
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 3px; margin-right: 8px; vertical-align: middle;
+    border: 1px solid rgba(0,0,0,0.07);
   }
 
+  /* ── CONTROLS HINT ── */
   #controls {
-    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-    background: rgba(255,255,255,0.85); color: #555;
-    padding: 8px 22px; border-radius: 8px; font-size: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1); white-space: nowrap;
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: rgba(250,248,245,0.82); color: var(--muted);
+    padding: 7px 20px; border-radius: 30px; font-size: 11px;
+    box-shadow: 0 2px 12px rgba(28,25,22,.09); white-space: nowrap;
+    backdrop-filter: blur(8px); border: 1px solid var(--border);
   }
 
+  /* ── VIEW BUTTONS ── */
   #views {
-    position: absolute; bottom: 56px; right: 16px;
-    display: flex; flex-direction: column; gap: 6px;
+    position: absolute; bottom: 62px; right: 18px;
+    display: flex; flex-direction: column; gap: 5px;
   }
   .vbtn {
-    background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.12);
-    padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.15s;
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 7px 16px; border-radius: 8px; font-size: 11.5px;
+    cursor: pointer; font-family: var(--ff-body); font-weight: 600;
+    box-shadow: 0 2px 10px rgba(28,25,22,.08); transition: all 0.15s;
+    color: var(--muted);
   }
-  .vbtn:hover { background: #fff; }
+  .vbtn:hover { background: #fff; color: var(--text); transform: translateX(-2px); }
 
+  /* ── DESIGN TOGGLE ── */
   #design-toggle {
-    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 0; background: rgba(255,255,255,0.93);
-    border-radius: 10px; padding: 4px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+    position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+    display: flex; background: var(--panel); border-radius: 12px; padding: 4px;
+    box-shadow: var(--sh); border: 1px solid var(--border);
   }
   .dbtn {
-    padding: 8px 24px; border-radius: 7px; font-size: 13px; font-weight: 700;
-    cursor: pointer; border: none; background: transparent; color: #888;
-    transition: all 0.18s; letter-spacing: 0.2px;
+    padding: 9px 26px; border-radius: 9px; font-size: 13px; font-weight: 700;
+    cursor: pointer; border: none; background: transparent;
+    color: var(--muted); font-family: var(--ff-body);
+    transition: all 0.2s; letter-spacing: 0.2px;
   }
-  .dbtn.active { background: #222; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+  .dbtn.active {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 2px 10px rgba(60,47,34,.30);
+  }
 
-  /* ââ SHOPPING BUTTON ââ */
+  /* ── SHOPPING BUTTON ── */
   #btn-shop {
-    position: absolute; bottom: 56px; left: 16px;
-    background: #222; color: #fff; border: none;
-    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
-    cursor: pointer; box-shadow: 0 3px 14px rgba(0,0,0,0.22);
-    transition: background 0.15s; letter-spacing: 0.2px;
+    position: absolute; bottom: 62px; left: 18px;
+    background: var(--accent); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(60,47,34,.32);
+    transition: all 0.18s; font-family: var(--ff-body);
   }
-  #btn-shop:hover { background: #444; }
+  #btn-shop:hover { background: #281f14; transform: translateY(-1px); }
 
-  /* ââ SHOPPING PANEL ââ */
+  /* ── SHOPPING PANEL ── */
   #shop-panel {
     display: none; position: absolute; top: 0; right: 0; bottom: 0;
-    width: 400px; background: rgba(255,255,255,0.97);
-    box-shadow: -4px 0 32px rgba(0,0,0,0.18);
-    overflow-y: auto; font-size: 12.5px; line-height: 1.6; color: #333;
-    z-index: 10;
+    width: 430px; background: var(--panel);
+    box-shadow: -6px 0 40px rgba(28,25,22,.18);
+    overflow-y: auto; font-size: 12.5px; line-height: 1.65;
+    color: var(--text); z-index: 10; font-family: var(--ff-body);
   }
-  #shop-panel.open { display: block; }
+  #shop-panel.open { display: block; animation: slideIn .22s ease-out; }
+  @keyframes slideIn {
+    from { transform: translateX(24px); opacity: .7; }
+    to   { transform: translateX(0);    opacity: 1;  }
+  }
   .sp-head {
-    position: sticky; top: 0; background: #fff;
-    padding: 16px 20px 12px; border-bottom: 1px solid #eee;
-    display: flex; align-items: center; justify-content: space-between;
-    z-index: 2;
+    position: sticky; top: 0; background: var(--panel);
+    padding: 20px 24px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; z-index: 2;
   }
-  .sp-head h2 { font-size: 15px; color: #111; margin: 0; }
+  .sp-head h2 {
+    font-family: var(--ff-title); font-size: 19px;
+    color: var(--text); margin: 0; font-weight: 700; letter-spacing: -.3px;
+  }
   #btn-shop-close {
-    background: none; border: none; font-size: 20px;
-    cursor: pointer; color: #888; line-height: 1; padding: 2px 6px;
+    background: none; border: none; font-size: 18px;
+    cursor: pointer; color: var(--muted); line-height: 1;
+    padding: 4px 8px; border-radius: 6px; transition: all .15s;
   }
-  #btn-shop-close:hover { color: #222; }
+  #btn-shop-close:hover { color: var(--text); background: var(--border); }
   .sp-tabs {
-    display: flex; gap: 0; padding: 10px 20px 0;
-    border-bottom: 2px solid #eee;
+    display: flex; padding: 0 20px;
+    border-bottom: 1px solid var(--border); background: var(--panel);
+    overflow-x: auto; flex-shrink: 0;
   }
   .sp-tab {
-    padding: 7px 20px; font-size: 12px; font-weight: 700;
+    padding: 12px 14px; font-size: 11.5px; font-weight: 700;
     cursor: pointer; border: none; background: none;
-    color: #999; border-bottom: 2px solid transparent;
-    margin-bottom: -2px; transition: all 0.15s;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all .15s; white-space: nowrap;
+    font-family: var(--ff-body);
   }
-  .sp-tab.active { color: #111; border-bottom-color: #222; }
-  .sp-body { padding: 14px 20px 24px; }
+  .sp-tab.active { color: var(--text); border-bottom-color: var(--amber); }
+  .sp-tab:hover:not(.active) { color: var(--text); }
+  .sp-body { padding: 16px 24px 32px; }
   .sp-section {
-    font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
-    text-transform: uppercase; color: #888; margin: 16px 0 8px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px;
+    text-transform: uppercase; color: var(--muted);
+    margin: 20px 0 10px; padding-bottom: 7px;
+    border-bottom: 1px solid var(--border);
   }
   .sp-item {
     display: flex; justify-content: space-between; align-items: flex-start;
-    padding: 8px 0; border-bottom: 1px solid #f0f0f0; gap: 8px;
+    padding: 11px 0; border-bottom: 1px solid #ede8e2; gap: 10px;
   }
   .sp-item:last-child { border-bottom: none; }
-  .sp-name { flex: 1; color: #333; }
-  .sp-name small { display: block; color: #999; font-size: 11px; margin-top: 1px; }
-  .sp-price { font-weight: 700; color: #111; white-space: nowrap; }
-  .sp-links { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+  .sp-name { flex: 1; color: var(--text); font-weight: 500; }
+  .sp-name small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; font-weight: 400; }
+  .sp-price { font-weight: 700; color: var(--amber); white-space: nowrap; font-size: 13px; }
+  .sp-links { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
   .sp-link {
-    font-size: 10px; padding: 2px 7px; border-radius: 4px;
-    text-decoration: none; font-weight: 600;
+    font-size: 10px; padding: 3px 9px; border-radius: 5px;
+    text-decoration: none; font-weight: 600; transition: opacity .15s;
   }
-  .sp-link.cast { background: #fff3e0; color: #e65100; }
-  .sp-link.alle { background: #fff8e1; color: #f57f17; }
-  .sp-link.amaz { background: #e8f5e9; color: #2e7d32; }
-  .sp-link:hover { opacity: 0.75; }
+  .sp-link.cast { background: #fef2e4; color: #b85c18; }
+  .sp-link.alle { background: #fef8e0; color: #9e6f0a; }
+  .sp-link.amaz { background: #e8f5ea; color: #2d7a3a; }
+  .sp-link:hover { opacity: .7; }
+  /* item comment badge */
+  .item-cmt-btn {
+    font-size: 10px; padding: 2px 8px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); cursor: pointer; font-family: var(--ff-body);
+    font-weight: 600; transition: all .15s; white-space: nowrap;
+  }
+  .item-cmt-btn:hover, .item-cmt-btn.has-comments {
+    background: var(--amber); color: #fff; border-color: var(--amber);
+  }
   .sp-total {
-    margin-top: 20px; padding: 14px 16px; background: #f7f7f5;
-    border-radius: 10px; display: flex; justify-content: space-between;
-    align-items: center;
+    margin-top: 24px; padding: 16px 18px;
+    background: linear-gradient(135deg, #f0e8dc, #f7f2ec);
+    border-radius: 12px; display: flex; justify-content: space-between;
+    align-items: center; border: 1px solid #e4d9cc;
   }
-  .sp-total span { font-size: 14px; font-weight: 800; color: #111; }
+  .sp-total span { font-size: 13px; font-weight: 700; color: var(--text); }
+  .sp-total span:last-child { font-size: 19px; color: var(--amber); }
   .sp-note {
-    font-size: 11px; color: #888; background: #fafafa;
-    border-left: 3px solid #ddd; padding: 8px 10px;
-    margin-top: 12px; border-radius: 0 6px 6px 0;
+    font-size: 11px; color: var(--muted); background: #f5f2ee;
+    border-left: 3px solid var(--amber); padding: 9px 12px;
+    margin-top: 14px; border-radius: 0 8px 8px 0; line-height: 1.65;
   }
 
-  /* ââ COMMENTS ââ */
+  /* ── COMMENTS & POLLS ── */
   .comment-tag {
-    display: inline-block; font-size: 10px; font-weight: 700;
-    padding: 1px 7px; border-radius: 10px; margin-right: 5px;
-    background: #f0f0f0; color: #666; vertical-align: middle;
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 10px; margin-right: 5px;
+    background: #f0ece6; color: var(--muted);
   }
-  .comment-entry {
-    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
-  }
+  .comment-entry { padding: 13px 0; border-bottom: 1px solid #ede8e2; }
   .comment-entry:last-child { border-bottom: none; }
-  .comment-meta {
-    font-size: 11px; color: #aaa; margin-top: 3px;
-  }
+  .comment-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
   .comment-initials {
-    display: inline-block; width: 28px; height: 28px; line-height: 28px;
-    text-align: center; border-radius: 50%; background: #222; color: #fff;
-    font-size: 11px; font-weight: 800; margin-right: 8px; flex-shrink: 0;
+    display: inline-flex; width: 33px; height: 33px;
+    align-items: center; justify-content: center;
+    border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
   }
-  .comment-row { display: flex; align-items: flex-start; gap: 0; }
-  .comment-body { flex: 1; font-size: 12.5px; color: #333; }
+  .comment-row { display: flex; align-items: flex-start; gap: 10px; }
+  .comment-body { flex: 1; font-size: 12.5px; color: var(--text); }
   .comment-form {
-    margin-top: 18px; padding: 14px; background: #f7f7f5;
-    border-radius: 10px;
+    margin-top: 20px; padding: 16px; background: #f5f2ee;
+    border-radius: 12px; border: 1px solid var(--border);
   }
-  .comment-form label {
-    font-size: 10px; font-weight: 800; letter-spacing: 0.6px;
-    text-transform: uppercase; color: #888; display: block; margin-bottom: 5px;
+  .comment-form label, .form-label {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; color: var(--muted);
+    display: block; margin-bottom: 6px;
   }
   .comment-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .comment-input-row input[type=text] {
-    flex: 1; padding: 7px 10px; border: 1px solid #ddd; border-radius: 6px;
-    font-size: 12px; outline: none;
+  .cf-input {
+    flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 12px; outline: none; font-family: var(--ff-body);
+    background: #fff; color: var(--text); transition: border-color .15s;
+    width: 100%;
   }
-  .comment-input-row input[type=text]:focus { border-color: #aaa; }
+  .cf-input:focus { border-color: var(--muted); }
   .initials-input { width: 54px !important; flex: none !important; text-align: center; font-weight: 700; text-transform: uppercase; }
-  .comment-text-input { width: 100%; padding: 7px 10px; border: 1px solid #ddd;
-    border-radius: 6px; font-size: 12px; resize: none; outline: none; font-family: inherit; }
-  .comment-text-input:focus { border-color: #aaa; }
-  .tag-select {
-    width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px;
+  .comment-text-input {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 12px; resize: none; outline: none;
+    font-family: var(--ff-body); background: #fff; color: var(--text);
+    transition: border-color .15s; margin-bottom: 8px;
+  }
+  .comment-text-input:focus { border-color: var(--muted); }
+  .cf-select {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
     font-size: 12px; outline: none; margin-bottom: 8px; background: #fff;
+    font-family: var(--ff-body); color: var(--text);
   }
-  .btn-submit-comment {
-    width: 100%; padding: 9px; background: #222; color: #fff; border: none;
-    border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer;
-    transition: background 0.15s;
+  .btn-submit-comment, .btn-poll {
+    width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none;
+    border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all .15s; font-family: var(--ff-body); letter-spacing: .2px;
   }
-  .btn-submit-comment:hover:not(:disabled) { background: #444; }
-  .btn-submit-comment:disabled { background: #ccc; cursor: default; }
+  .btn-submit-comment:hover:not(:disabled), .btn-poll:hover:not(:disabled) {
+    background: #281f14; transform: translateY(-1px);
+  }
+  .btn-submit-comment:disabled, .btn-poll:disabled { background: #ccc; cursor: default; transform: none; }
   .comment-status {
-    font-size: 11px; text-align: center; margin-top: 8px; min-height: 16px;
-    color: #666;
+    font-size: 11px; text-align: center; margin-top: 8px; min-height: 16px; color: var(--muted);
   }
-  .comment-status.ok { color: #2e7d32; font-weight: 700; }
+  .comment-status.ok { color: var(--green); font-weight: 700; }
   .comment-status.err { color: #c62828; }
   .ep {
-    font-size: 20px; background: #fff; border: 2px solid #eee;
-    border-radius: 8px; padding: 3px 7px; cursor: pointer;
-    transition: all 0.12s; line-height: 1;
+    font-size: 18px; background: #fff; border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 4px 8px; cursor: pointer;
+    transition: all .12s; line-height: 1;
   }
-  .ep:hover { border-color: #bbb; transform: scale(1.15); }
-  .ep.selected { border-color: #222; background: #f5f5f3; transform: scale(1.15); }
-  .comment-emoji { font-size: 16px; margin-right: 5px; vertical-align: middle; }
-
+  .ep:hover { border-color: var(--muted); transform: scale(1.12); }
+  .ep.selected { border-color: var(--accent); background: #f0ece6; transform: scale(1.12); }
+  .comment-emoji { font-size: 15px; margin-right: 5px; vertical-align: middle; }
   #comment-count {
-    display: inline-block; background: #222; color: #fff;
-    border-radius: 10px; font-size: 10px; font-weight: 800;
-    padding: 1px 7px; margin-left: 6px; vertical-align: middle;
+    display: inline-block; background: var(--amber); color: #fff;
+    border-radius: 10px; font-size: 10px; font-weight: 700;
+    padding: 1px 7px; margin-left: 5px; vertical-align: middle;
+  }
+  /* ── POLLS ── */
+  .poll-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .poll-question {
+    font-family: var(--ff-title); font-size: 14px; font-weight: 600;
+    color: var(--text); margin-bottom: 10px;
+  }
+  .poll-option {
+    margin-bottom: 7px;
+  }
+  .poll-bar-wrap {
+    background: #f0ece6; border-radius: 6px; height: 26px;
+    position: relative; overflow: hidden; cursor: pointer;
+    transition: opacity .15s;
+  }
+  .poll-bar-wrap:hover { opacity: .85; }
+  .poll-bar-wrap.voted { cursor: default; opacity: 1; }
+  .poll-bar {
+    height: 100%; background: var(--amber); border-radius: 6px;
+    transition: width .4s ease; opacity: .85;
+  }
+  .poll-bar-wrap.my-vote .poll-bar { background: var(--accent); opacity: 1; }
+  .poll-bar-label {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    left: 10px; font-size: 11.5px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;
+  }
+  .poll-bar-pct {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    right: 9px; font-size: 11px; font-weight: 700; color: var(--muted);
+  }
+  .poll-meta {
+    font-size: 10.5px; color: var(--muted); margin-top: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .poll-countdown { font-weight: 700; color: var(--amber); }
+  .poll-countdown.ended { color: var(--muted); }
+  .create-poll-form {
+    background: #f5f2ee; border-radius: 12px; padding: 16px;
+    border: 1px solid var(--border); margin-top: 8px;
+  }
+  .poll-option-inputs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .poll-date-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .poll-date-row label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .btn-toggle-poll {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 14px; font-size: 11.5px; font-weight: 600; cursor: pointer;
+    color: var(--muted); font-family: var(--ff-body); transition: all .15s;
+    margin-bottom: 12px;
+  }
+  .btn-toggle-poll:hover { background: var(--border); color: var(--text); }
+  .section-divider {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px;
+    text-transform: uppercase; color: var(--muted);
+    padding: 10px 0 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+  .comments-filter {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .cmt-filter-btn {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    border: 1px solid var(--border); background: transparent; cursor: pointer;
+    color: var(--muted); font-family: var(--ff-body); transition: all .15s;
+  }
+  .cmt-filter-btn.active, .cmt-filter-btn:hover {
+    background: var(--accent); color: #fff; border-color: var(--accent);
   }
 </style>
 </head>
 <body>
 
 <div id="info">
-  <h2>Bar GÃ³ra â Model 3D</h2>
+  <h2>Bar Góra — Model 3D</h2>
 
-  <div class="section">DuÅ¼y pokÃ³j (A-frame)</div>
-  <div class="dim">SzerokoÅÄ podÅogi: <b>292 cm</b></div>
-  <div class="dim">DÅugoÅÄ: <b>347 cm</b></div>
-  <div class="dim">WysokoÅÄ szczytu: <b>293 cm</b></div>
-  <div class="dim">KÄt nachylenia Åcian: <b>60Â°</b></div>
+  <div class="section">Duży pokój (A-frame)</div>
+  <div class="dim">Szerokość podłogi: <b>292 cm</b></div>
+  <div class="dim">Długość: <b>347 cm</b></div>
+  <div class="dim">Wysokość szczytu: <b>293 cm</b></div>
+  <div class="dim">Kąt nachylenia ścian: <b>60°</b></div>
 
-  <div class="section">MaÅy pokÃ³j (schody)</div>
-  <div class="dim">GÅÄbokoÅÄ: <b>225 cm</b></div>
+  <div class="section">Mały pokój (schody)</div>
+  <div class="dim">Głębokość: <b>225 cm</b></div>
   <div class="dim">Schody: <b>68 cm</b> szer.</div>
-  <div class="dim">OdstÄp schodyâÅciana: <b>50 cm</b></div>
+  <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
 
   <div id="info-a">
-    <div class="section">Projekt A â Strefa Zen</div>
-    <div class="dim">Mata piankowa: <b>292 Ã 347 cm Ã 22 cm</b></div>
-    <div class="dim">Poduszki lounge + waÅki</div>
-    <div class="dim">Kufer na koÅdry</div>
+    <div class="section">Projekt A — Strefa Zen</div>
+    <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
+    <div class="dim">Poduszki lounge + wałki</div>
+    <div class="dim">Kufer na kołdry</div>
   </div>
   <div id="info-b" style="display:none">
-    <div class="section">Projekt B â Hamaki &amp; Relaks</div>
-    <div class="dim">2Ã hamak tkany (duÅ¼y pokÃ³j)</div>
-    <div class="dim">Poduszki podÅogowe</div>
-    <div class="dim">Fotel brazylijki (maÅy pokÃ³j)</div>
-    <div class="dim">Kufer na koÅdry</div>
+    <div class="section">Projekt B — Hamaki &amp; Relaks</div>
+    <div class="dim">2× hamak tkany (duży pokój)</div>
+    <div class="dim">Poduszki podłogowe</div>
+    <div class="dim">Fotel brazylijki (mały pokój)</div>
+    <div class="dim">Kufer na kołdry</div>
   </div>
 </div>
 
 <div id="legend">
   <h3>Legenda</h3>
-  <div><span class="dot" style="background:#f8f6f0;"></span> Åciany i sufit (biaÅe)</div>
-  <div><span class="dot" style="background:#b4b2ac;"></span> PodÅoga (szara)</div>
+  <div><span class="dot" style="background:#f8f6f0;"></span> Ściany i sufit (białe)</div>
+  <div><span class="dot" style="background:#b4b2ac;"></span> Podłoga (szara)</div>
   <div id="leg-a">
     <div><span class="dot" style="background:#f2efe0;"></span> Mata piankowa</div>
-    <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + waÅki</div>
+    <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + wałki</div>
   </div>
   <div id="leg-b" style="display:none">
     <div><span class="dot" style="background:#c8a870;"></span> Hamaki tkane</div>
     <div><span class="dot" style="background:#c8a878;"></span> Fotel brazylijki</div>
     <div><span class="dot" style="background:#b8c4a8;"></span> Poduszki (B)</div>
   </div>
-  <div><span class="dot" style="background:#7a5a38;"></span> Kufer na koÅdry</div>
+  <div><span class="dot" style="background:#7a5a38;"></span> Kufer na kołdry</div>
   <div><span class="dot" style="background:#c8ccd4;"></span> Schody</div>
   <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
 </div>
 
 <div id="design-toggle">
-  <button class="dbtn active" id="btn-da">ð Projekt A</button>
-  <button class="dbtn" id="btn-db">ðª¢ Projekt B</button>
+  <button class="dbtn active" id="btn-da">🛏 Projekt A</button>
+  <button class="dbtn" id="btn-db">🪢 Projekt B</button>
 </div>
 
 <div id="views">
-  <button class="vbtn" id="btn-overview">Widok ogÃ³lny</button>
-  <button class="vbtn" id="btn-duzy">DuÅ¼y pokÃ³j</button>
+  <button class="vbtn" id="btn-overview">Widok ogólny</button>
+  <button class="vbtn" id="btn-duzy">Duży pokój</button>
   <button class="vbtn" id="btn-schody">Schody</button>
-  <button class="vbtn" id="btn-top">Z gÃ³ry</button>
+  <button class="vbtn" id="btn-top">Z góry</button>
 </div>
 
-<button id="btn-shop">ð Lista zakupowa</button>
+<button id="btn-shop">🛒 Lista zakupowa</button>
 
 <div id="shop-panel">
   <div class="sp-head">
     <h2>Lista zakupowa</h2>
-    <button id="btn-shop-close">â</button>
+    <button id="btn-shop-close">✕</button>
   </div>
   <div class="sp-tabs">
-    <button class="sp-tab active" data-tab="a">ð Projekt A</button>
-    <button class="sp-tab" data-tab="b">ðª¢ Projekt B</button>
-    <button class="sp-tab" data-tab="wspolne">WspÃ³lne</button>
-    <button class="sp-tab" data-tab="komentarze">ð¬ Komentarze<span id="comment-count" style="display:none">0</span></button>
+    <button class="sp-tab active" data-tab="a">🛏 Projekt A</button>
+    <button class="sp-tab" data-tab="b">🪢 Projekt B</button>
+    <button class="sp-tab" data-tab="wspolne">Wspólne</button>
+    <button class="sp-tab" data-tab="komentarze">💬 Komentarze<span id="comment-count" style="display:none">0</span></button>
   </div>
 
   <!-- PROJEKT A -->
   <div class="sp-body" id="sp-a">
-    <div class="sp-section">Projekt A â Strefa Zen</div>
+    <div class="sp-section">Projekt A — Strefa Zen</div>
 
-    <div class="sp-item">
-      <div class="sp-name">Mata piankowa T35 na wymiar<small>292Ã347Ã20 cm â zamÃ³w u producenta z wymiarami</small>
+    <div class="sp-item" data-item-id="mata-piankowa">
+      <div class="sp-name">Mata piankowa T35 na wymiar<small>292×347×20 cm — zamów u producenta z wymiarami</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=pianka+poliuretanowa+na+wymiar+20cm" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=topper+piankowy+200x200+20cm" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Mata piankowa (A)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~450 zÅ</div>
+      <div class="sp-price">~450 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Pokrowiec na matÄ<small>2Ã przeÅcieradÅo elastyczne 200Ã200 cm</small>
+    <div class="sp-item" data-item-id="pokrowiec">
+      <div class="sp-name">Pokrowiec na matę<small>2× prześcieradło elastyczne 200×200 cm</small>
         <div class="sp-links">
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=prze%C5%9Bcieradlo+elastyczne+200x200" target="_blank">Amazon</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=prze%C5%9Bcieradlo+elastyczne+200x200+jersey" target="_blank">Allegro</a>
+          <button class="item-cmt-btn" data-item="Pokrowiec na matę (A)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~140 zÅ</div>
+      <div class="sp-price">~140 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">6Ã poduszka lounge 70Ã70 cm<small>baweÅna, beÅ¼/taupe â szukaj zestawÃ³w 3-pak</small>
+    <div class="sp-item" data-item-id="poduszki-lounge">
+      <div class="sp-name">6× poduszka lounge 70×70 cm<small>bawełna, beż/taupe — szukaj zestawów 3-pak</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+du%C5%BCa+70x70+bawelna" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+70x70+naturalna" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Poduszki lounge (A)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~480 zÅ</div>
+      <div class="sp-price">~480 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">3Ã poduszka oparciowa 80Ã65 cm<small>przy tylnej Åcianie, styl zazen</small>
+    <div class="sp-item" data-item-id="poduszki-oparcie">
+      <div class="sp-name">3× poduszka oparciowa 80×65 cm<small>przy tylnej ścianie, styl zazen</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+oparciowa+du%C5%BCa+80cm+pod%C5%82oga" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+oparciowa+pod%C5%82oga+80cm" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Poduszki oparciowe (A)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~270 zÅ</div>
+      <div class="sp-price">~270 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">2Ã waÅek dekoracyjny bolster 60 cm<small>okrÄgÅy, baweÅniany</small>
+    <div class="sp-item" data-item-id="walki">
+      <div class="sp-name">2× wałek dekoracyjny bolster 60 cm<small>okrągły, bawełniany</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga+60cm" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Wałki bolster (A)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~110 zÅ</div>
+      <div class="sp-price">~110 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Kufer drewniany na koÅdry ~120 cm<small>sosnowy, z pokrywÄ â wspÃ³lny dla obu projektÃ³w</small>
+    <div class="sp-item" data-item-id="kufer">
+      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=skrzynia+keter" target="_blank">Castorama</a>
+          <button class="item-cmt-btn" data-item="Kufer na kołdry">💬</button>
         </div>
       </div>
-      <div class="sp-price">~350 zÅ</div>
+      <div class="sp-price">~350 zł</div>
     </div>
 
     <div class="sp-total">
-      <span>ð° Suma Projekt A</span>
-      <span>~1 800 zÅ</span>
+      <span>💰 Suma Projekt A</span>
+      <span>~1 800 zł</span>
     </div>
-    <div class="sp-note">â Mata piankowa: podaj wymiary 292Ã347 cm przy zamÃ³wieniu, gÄstoÅÄ T35 (35 kg/mÂ³)</div>
+    <div class="sp-note">★ Mata piankowa: podaj wymiary 292×347 cm przy zamówieniu, gęstość T35 (35 kg/m³)</div>
   </div>
 
   <!-- PROJEKT B -->
   <div class="sp-body" id="sp-b" style="display:none">
-    <div class="sp-section">Projekt B â Hamaki &amp; Fotel Brazylijki</div>
+    <div class="sp-section">Projekt B — Hamaki &amp; Fotel Brazylijki</div>
 
-    <div class="sp-item">
-      <div class="sp-name">2Ã hamak brazylijski tkany baweÅniany<small>bez drÄÅ¼kÃ³w, ~200Ã90 cm â "hamak siodeÅkowy tkany"</small>
+    <div class="sp-item" data-item-id="hamaki">
+      <div class="sp-name">2× hamak brazylijski tkany bawełniany<small>bez drążków, ~200×90 cm — "hamak siodełkowy tkany"</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=hamak+brazylijski+tkany+bawelniany+bez+dr%C4%85%C5%BCk%C3%B3w" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=hamak+brazylijski+tkany+bawelniany+bez+dr%C4%85%C5%BCk%C3%B3w" target="_blank">Allegro ★</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=hamak+ogrodowy+bawelniany" target="_blank">Castorama</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=hamak+brazylijski+tkany+bez+dra%C5%BCk%C3%B3w" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Hamaki (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~260 zÅ</div>
+      <div class="sp-price">~260 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">4Ã Åruba oczkowa M10 + karabiÅczyki<small>kotwice do krokwi â wkrÄÄ w krokwie, min. 60 mm gÅÄbokoÅci</small>
+    <div class="sp-item" data-item-id="kotwice">
+      <div class="sp-name">4× śruba oczkowa M10 + karabińczyki<small>kotwice do krokwi — wkręć w krokwie, min. 60 mm głębokości</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/search?q=%C5%9Bruba+oczkowa+m10+ocynkowana" target="_blank">Castorama â</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=%C5%9Bruba+oczkowa+m10+ocynkowana" target="_blank">Castorama ★</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=uchwyt+do+hamaka+zestaw+stalowy+150kg" target="_blank">Allegro</a>
+          <button class="item-cmt-btn" data-item="Kotwice M10 (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~100 zÅ</div>
+      <div class="sp-price">~100 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Fotel brazylijki wiszÄcy tkany<small>baweÅna, bez stojaka â montaÅ¼ na hak w krokwi kalenicy</small>
+    <div class="sp-item" data-item-id="fotel-brazylijki">
+      <div class="sp-name">Fotel brazylijki wiszący tkany<small>bawełna, bez stojaka — montaż na hak w krokwi kalenicy</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=fotel+brazylijki+wiszacy+tkanina+bawelna" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=fotel+brazylijki+wiszacy+tkanina+bawelna" target="_blank">Allegro ★</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=fotel+wiszacy+ogrodowy" target="_blank">Castorama</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=fotel+wiszacy+hamakowy+tkany+brazylijski" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Fotel brazylijki (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~320 zÅ</div>
+      <div class="sp-price">~320 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Hak sufitowy M10 + obrotnica 360Â°<small>noÅnoÅÄ min. 150 kg â do kalenicy maÅego pokoju</small>
+    <div class="sp-item" data-item-id="hak-obrotnica">
+      <div class="sp-name">Hak sufitowy M10 + obrotnica 360°<small>nośność min. 150 kg — do kalenicy małego pokoju</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hak+sufitowy+obrotnica+360" target="_blank">Castorama â</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hak+sufitowy+obrotnica+360" target="_blank">Castorama ★</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=obrotnica+360+fotel+wiszacy+M10+150kg" target="_blank">Allegro</a>
+          <button class="item-cmt-btn" data-item="Hak + obrotnica (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~60 zÅ</div>
+      <div class="sp-price">~60 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">10Ã poduszka podÅogowa 65Ã65 cm<small>oliwkowa/zielona boho â szukaj zestawÃ³w 3-pak</small>
+    <div class="sp-item" data-item-id="poduszki-b">
+      <div class="sp-name">10× poduszka podłogowa 65×65 cm<small>oliwkowa/zielona boho — szukaj zestawów 3-pak</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+65x65+oliwkowa+boho" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+65x65+oliwkowa+boho" target="_blank">Allegro ★</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+lounge+65cm+bawelna" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Poduszki podłogowe (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~700 zÅ</div>
+      <div class="sp-price">~700 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Zestaw poduszek do fotela<small>siedzenie + oparcie do fotela wiszÄcego</small>
+    <div class="sp-item" data-item-id="poduszki-fotel">
+      <div class="sp-name">Zestaw poduszek do fotela<small>siedzenie + oparcie do fotela wiszącego</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszki+do+fotela+wiszacego+brazylijki+zestaw" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszki+do+fotela+wiszacego+brazylijki+zestaw" target="_blank">Allegro ★</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+fotel+wiszacy+hamakowy+wymiana" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Poduszki do fotela (B)">💬</button>
         </div>
       </div>
-      <div class="sp-price">~110 zÅ</div>
+      <div class="sp-price">~110 zł</div>
     </div>
 
-    <div class="sp-item">
-      <div class="sp-name">Kufer drewniany na koÅdry ~120 cm<small>sosnowy, z pokrywÄ â wspÃ³lny dla obu projektÃ³w</small>
+    <div class="sp-item" data-item-id="kufer">
+      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro â</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
+          <button class="item-cmt-btn" data-item="Kufer na kołdry">💬</button>
         </div>
       </div>
-      <div class="sp-price">~350 zÅ</div>
+      <div class="sp-price">~350 zł</div>
     </div>
 
     <div class="sp-total">
-      <span>ð° Suma Projekt B</span>
-      <span>~1 900 zÅ</span>
+      <span>💰 Suma Projekt B</span>
+      <span>~1 900 zł</span>
     </div>
-    <div class="sp-note">â ï¸ Kotwy hamakÃ³w i hak fotela muszÄ byÄ wkrÄcone w krokwie drewniane (co ~63 cm), nie w deskowanie!</div>
+    <div class="sp-note">⚠️ Kotwy hamaków i hak fotela muszą być wkręcone w krokwie drewniane (co ~63 cm), nie w deskowanie!</div>
   </div>
 
-  <!-- WSPÃLNE -->
+  <!-- WSPÓLNE -->
   <div class="sp-body" id="sp-wspolne" style="display:none">
-    <div class="sp-section">PorÃ³wnanie projektÃ³w</div>
-    <div class="sp-item"><div class="sp-name">Projekt A â Strefa Zen</div><div class="sp-price">~1 800 zÅ</div></div>
-    <div class="sp-item"><div class="sp-name">Projekt B â Hamaki &amp; Relaks</div><div class="sp-price">~1 900 zÅ</div></div>
-    <div class="sp-section">RÃ³Å¼nica</div>
-    <div class="sp-item"><div class="sp-name">Projekty zbliÅ¼one cenowo</div><div class="sp-price">~100 zÅ</div></div>
-    <div class="sp-section">Sklep gÅÃ³wny</div>
+    <div class="sp-section">Porównanie projektów</div>
+    <div class="sp-item"><div class="sp-name">Projekt A — Strefa Zen</div><div class="sp-price">~1 800 zł</div></div>
+    <div class="sp-item"><div class="sp-name">Projekt B — Hamaki &amp; Relaks</div><div class="sp-price">~1 900 zł</div></div>
+    <div class="sp-section">Różnica</div>
+    <div class="sp-item"><div class="sp-name">Projekty zbliżone cenowo</div><div class="sp-price">~100 zł</div></div>
+    <div class="sp-section">Sklep główny</div>
     <div class="sp-item">
-      <div class="sp-name">Castorama Bydgoszcz SzubiÅska<small>Åruby oczkowe, karabiÅczyki, haki â elementy montaÅ¼owe</small>
+      <div class="sp-name">Castorama Bydgoszcz Szubińska<small>śruby oczkowe, karabińczyki, haki — elementy montażowe</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/sklepy/bydgoszcz-szubinska.html" target="_blank">Castorama â</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/sklepy/bydgoszcz-szubinska.html" target="_blank">Castorama ↗</a>
         </div>
       </div>
     </div>
-    <div class="sp-note">â = rekomendowana opcja dla danej pozycji<br>WiÄkszoÅÄ zakupÃ³w (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama przydatna dla elementÃ³w montaÅ¼owych (Åruby M10, karabiÅczyki, haki).</div>
+    <div class="sp-note">★ = rekomendowana opcja dla danej pozycji<br>Większość zakupów (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama dla elementów montażowych.</div>
   </div>
 
-  <!-- KOMENTARZE -->
+  <!-- GŁOSOWANIA & KOMENTARZE -->
   <div class="sp-body" id="sp-komentarze" style="display:none">
-    <div class="sp-section">Komentarze odwiedzajÄcych</div>
+
+    <!-- POLLS -->
+    <div class="section-divider">📊 Głosowania</div>
+    <div id="polls-list"><div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center;">Ładowanie głosowań…</div></div>
+
+    <button class="btn-toggle-poll" id="btn-show-poll-form">+ Utwórz głosowanie</button>
+    <div class="create-poll-form" id="poll-form" style="display:none">
+      <div class="form-label">Twoje inicjały</div>
+      <input type="text" class="cf-input initials-input" id="p-initials" maxlength="3" placeholder="JK" autocomplete="off" style="margin-bottom:8px;width:64px;">
+      <div class="form-label" style="margin-top:4px;">Pytanie</div>
+      <input type="text" class="cf-input" id="p-question" placeholder="Który projekt wybieramy?" style="margin-bottom:8px;">
+      <div class="form-label">Opcje do wyboru</div>
+      <div class="poll-option-inputs">
+        <input type="text" class="cf-input" id="p-opt-0" placeholder="Projekt A — Strefa Zen">
+        <input type="text" class="cf-input" id="p-opt-1" placeholder="Projekt B — Hamaki">
+        <input type="text" class="cf-input" id="p-opt-2" placeholder="Opcja 3 (opcjonalnie)">
+        <input type="text" class="cf-input" id="p-opt-3" placeholder="Opcja 4 (opcjonalnie)">
+      </div>
+      <div class="poll-date-row">
+        <label>Głosowanie do:</label>
+        <input type="date" class="cf-input" id="p-end-date" style="flex:1;">
+      </div>
+      <button class="btn-poll" id="btn-create-poll">Utwórz głosowanie →</button>
+      <div class="comment-status" id="poll-status"></div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="section-divider" style="margin-top:24px;">💬 Komentarze</div>
+    <div class="comments-filter" id="comments-filter">
+      <button class="cmt-filter-btn active" data-filter="all">Wszystkie</button>
+    </div>
     <div id="comments-list">
-      <div style="color:#aaa; font-size:12px; padding:8px 0;">Åadowanie komentarzyâ¦</div>
+      <div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center;">Ładowanie komentarzy…</div>
     </div>
 
     <div class="comment-form">
-      <label>Dodaj komentarz</label>
+      <div class="form-label">Dodaj komentarz</div>
       <div class="comment-input-row">
-        <input type="text" class="initials-input" id="c-initials" maxlength="3" placeholder="JK" autocomplete="off">
-        <input type="text" id="c-item" placeholder="Dotyczy (np. hamak, mataâ¦)" style="flex:1;padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;">
+        <input type="text" class="cf-input initials-input" id="c-initials" maxlength="3" placeholder="JK" autocomplete="off">
+        <select class="cf-input" id="c-item" style="flex:1;">
+          <option value="">— Dotyczy (ogólne) —</option>
+          <optgroup label="Projekt A">
+            <option value="Mata piankowa (A)">Mata piankowa</option>
+            <option value="Pokrowiec na matę (A)">Pokrowiec na matę</option>
+            <option value="Poduszki lounge (A)">Poduszki lounge</option>
+            <option value="Poduszki oparciowe (A)">Poduszki oparciowe</option>
+            <option value="Wałki bolster (A)">Wałki bolster</option>
+          </optgroup>
+          <optgroup label="Projekt B">
+            <option value="Hamaki (B)">Hamaki</option>
+            <option value="Kotwice M10 (B)">Kotwice M10</option>
+            <option value="Fotel brazylijki (B)">Fotel brazylijki</option>
+            <option value="Hak + obrotnica (B)">Hak + obrotnica</option>
+            <option value="Poduszki podłogowe (B)">Poduszki podłogowe</option>
+            <option value="Poduszki do fotela (B)">Poduszki do fotela</option>
+          </optgroup>
+          <optgroup label="Wspólne">
+            <option value="Kufer na kołdry">Kufer na kołdry</option>
+            <option value="Projekt ogólnie">Projekt ogólnie</option>
+          </optgroup>
+        </select>
       </div>
-      <textarea class="comment-text-input" id="c-text" rows="3" placeholder="TwÃ³j komentarz, znalezisko cenowe, uwagaâ¦"></textarea>
-      <div style="margin-bottom:8px;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#888;margin-bottom:6px;">NastrÃ³j</div>
+      <textarea class="comment-text-input" id="c-text" rows="3" placeholder="Twój komentarz, znalezisko cenowe, uwaga…"></textarea>
+      <div style="margin-bottom:10px;">
+        <div class="form-label">Nastrój</div>
         <div id="emoji-picker" style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="ep" data-e="ð" title="Super">ð</button>
-          <button class="ep" data-e="â¤ï¸" title="LubiÄ to">â¤ï¸</button>
-          <button class="ep" data-e="ð¥" title="GorÄce">ð¥</button>
-          <button class="ep" data-e="â­" title="Polecam">â­</button>
-          <button class="ep" data-e="ð¡" title="Dobry pomysÅ">ð¡</button>
-          <button class="ep" data-e="â" title="Sprawdzone">â</button>
-          <button class="ep" data-e="ð" title="MiÅe">ð</button>
-          <button class="ep" data-e="ð°" title="Okazja cenowa">ð°</button>
+          <button class="ep" data-e="👍">👍</button>
+          <button class="ep" data-e="❤️">❤️</button>
+          <button class="ep" data-e="🔥">🔥</button>
+          <button class="ep" data-e="⭐">⭐</button>
+          <button class="ep" data-e="💡">💡</button>
+          <button class="ep" data-e="✅">✅</button>
+          <button class="ep" data-e="😊">😊</button>
+          <button class="ep" data-e="💰">💰</button>
         </div>
       </div>
-      <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz â</button>
+      <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz →</button>
       <div class="comment-status" id="comment-status"></div>
     </div>
   </div>
 </div>
 
-<div id="controls">LPM + przeciÄganie = obrÃ³t &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesuniÄcie</div>
+<div id="controls">LPM + przeciąganie = obrót &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesunięcie</div>
 
 <script type="importmap">
 {
@@ -511,7 +707,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// âââ SCENE SETUP âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── SCENE SETUP ─────────────────────────────────────────────────────────
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xd4e4f0);
 scene.fog = new THREE.Fog(0xd4e4f0, 18, 40);
@@ -535,7 +731,7 @@ controls.target.set(1.46, 1.1, 2.8);
 controls.minDistance = 0.5;
 controls.maxDistance = 20;
 
-// âââ LIGHTING ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── LIGHTING ────────────────────────────────────────────────────────────
 const ambLight = new THREE.AmbientLight(0xffffff, 0.60);
 scene.add(ambLight);
 
@@ -556,10 +752,10 @@ const winLight = new THREE.PointLight(0xfff5e0, 0.8, 6, 1.5);
 winLight.position.set(1.46, 1.8, 0.3);
 scene.add(winLight);
 
-// âââ DIMENSIONS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── DIMENSIONS ──────────────────────────────────────────────────────────
 const W  = 2.92;   // floor width (both rooms)
-const L1 = 3.47;   // big room length   (z: 0 â L1)
-const L2 = 2.25;   // stair room length (z: L1 â L1+L2)
+const L1 = 3.47;   // big room length   (z: 0 → L1)
+const L2 = 2.25;   // stair room length (z: L1 → L1+L2)
 const LT = L1 + L2; // total 5.72 m
 const H  = 2.93;   // ridge height
 const CX = W / 2;  // ridge center x = 1.46
@@ -569,13 +765,13 @@ const DH = 1.90;          // doorway height
 const DX = CX - DW / 2;  // doorway left edge (centered)
 
 const SW  = 0.68; // stair tread width (x-dir)
-const SG  = 0.50; // gap stairsâleft wall
+const SG  = 0.50; // gap stairs→left wall
 const SD  = 1.40; // stair run depth (z-dir of the opening)
 const STEP_COUNT = 12;
 const STEP_RISE  = 0.22;
 const STEP_RUN   = SD / STEP_COUNT;
 
-// âââ MATERIALS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── MATERIALS ───────────────────────────────────────────────────────────
 const wallMat  = new THREE.MeshStandardMaterial({ color: 0xf8f6f0, roughness: 0.88, side: THREE.DoubleSide });
 const floorMat = new THREE.MeshStandardMaterial({ color: 0xb4b2ac, roughness: 0.92, metalness: 0.02 });
 const foamMat  = new THREE.MeshStandardMaterial({ color: 0xecead6, roughness: 0.96 });
@@ -591,7 +787,7 @@ const darkMat  = new THREE.MeshStandardMaterial({ color: 0x111114, roughness: 1 
 
 const cushColors = [0xe2c4a0, 0xd4b090, 0xc89888, 0xbca080, 0xd8c0a8, 0xe6d4b8];
 
-// âââ GEOMETRY HELPERS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── GEOMETRY HELPERS ────────────────────────────────────────────────────
 
 // Add a simple box
 function box(w, h, d, mat, x, y, z, ry = 0) {
@@ -640,7 +836,7 @@ function tube(p0, p1, r, mat) {
   m.castShadow = true; scene.add(m); return m;
 }
 
-// âââ DESIGN GROUPS âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── DESIGN GROUPS ───────────────────────────────────────────────────────
 // Temporarily redirect scene.add into a group
 let _activeGroup = null;
 const _origAdd = scene.add.bind(scene);
@@ -675,19 +871,19 @@ function label(text, x, y, z) {
   scene.add(sp);
 }
 
-// âââ A-FRAME STRUCTURE âââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── A-FRAME STRUCTURE ───────────────────────────────────────────────────
 
 // Full combined floor
 floorPlane(W, LT, floorMat, CX, LT / 2);
 
-// Left slanted wall/roof â full building length
+// Left slanted wall/roof — full building length
 // p0=(0,0,0), p1=(0,0,LT), p2=(CX,H,LT), p3=(CX,H,0)
 slopedFace([0,0,0], [0,0,LT], [CX,H,LT], [CX,H,0], wallMat);
 
-// Right slanted wall/roof â full building length
+// Right slanted wall/roof — full building length
 slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
 
-// âââ FRONT END WALL (z=0) â triangle with trapezoid window âââââââââââââââ
+// ─── FRONT END WALL (z=0) — triangle with trapezoid window ───────────────
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
@@ -718,14 +914,14 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   box(1.10, 0.06, 0.06, new THREE.MeshStandardMaterial({color:0xf0ece2, roughness:0.5}), CX, 0.87, 0.03);
 }
 
-// âââ BACK END WALL (z=LT) â solid triangle âââââââââââââââââââââââââââââââ
+// ─── BACK END WALL (z=LT) — solid triangle ───────────────────────────────
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
   shapeWall(s, LT, wallMat);
 }
 
-// âââ INTERIOR PARTITION WALL (z=L1) â triangle with centered doorway âââââ
+// ─── INTERIOR PARTITION WALL (z=L1) — triangle with centered doorway ─────
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
@@ -747,13 +943,13 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   box(0.06, DH, 0.08, fMat, DX + DW + 0.03, DH/2, L1);  // right
 }
 
-// âââ RIDGE BEAM (kalenica) ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── RIDGE BEAM (kalenica) ────────────────────────────────────────────────
 {
   const ridgeMat = new THREE.MeshStandardMaterial({color:0xf0ece0, roughness:0.7});
   tube([CX, H + 0.02, 0], [CX, H + 0.02, LT], 0.045, ridgeMat);
 }
 
-// âââ RAFTERS (krokwie) âââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── RAFTERS (krokwie) ───────────────────────────────────────────────────
 {
   const rafterMat = new THREE.MeshStandardMaterial({color:0xf4f0e8, roughness:0.8});
   const RAFTER_N = 9; // 8 bays
@@ -762,7 +958,7 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
     tube([0, 0, z], [CX, H, z], 0.025, rafterMat);
     tube([W, 0, z], [CX, H, z], 0.025, rafterMat);
   }
-  // Collar ties (poziome belki spinajÄce)
+  // Collar ties (poziome belki spinające)
   const TIE_H = 1.5;
   for (let i = 1; i <= RAFTER_N - 1; i++) {
     if (i % 2 === 0) {
@@ -773,7 +969,7 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
       tube([tieX0, TIE_H, z], [tieX1, TIE_H, z], 0.02, rafterMat);
     }
   }
-  // Purlin (pÅatew boczna) â horizontal beam along each slope
+  // Purlin (płatew boczna) — horizontal beam along each slope
   const PURLIN_T = 0.5; // fraction along rafter
   const px = CX * PURLIN_T;
   const py = H * PURLIN_T;
@@ -781,52 +977,52 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   tube([W - px, py, 0], [W - px, py, LT], 0.02, rafterMat);
 }
 
-// âââ PROJEKT A â STREFA ZEN âââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── PROJEKT A — STREFA ZEN ───────────────────────────────────────────────
 inGroup(groupA, () => {
-// âââ FOAM MAT â pokrywa caÅÄ podÅogÄ duÅ¼ego pokoju âââââââââââââââââââââââ
+// ─── FOAM MAT — pokrywa całą podłogę dużego pokoju ───────────────────────
 {
-  const FW = W;    // peÅna szerokoÅÄ podÅogi 2.92 m
-  const FL = L1;   // peÅna dÅugoÅÄ pokoju 3.47 m
-  const FH = 0.22; // gruboÅÄ 22 cm
+  const FW = W;    // pełna szerokość podłogi 2.92 m
+  const FL = L1;   // pełna długość pokoju 3.47 m
+  const FH = 0.22; // grubość 22 cm
   const fz = FL / 2;
   box(FW, FH, FL, foamMat, CX, FH / 2, fz);
 
-  // MiÄkka gÃ³rna powierzchnia (lekko jaÅniejsza)
+  // Miękka górna powierzchnia (lekko jaśniejsza)
   const topMat = new THREE.MeshStandardMaterial({color:0xf2efe0, roughness:0.97});
   box(FW, 0.008, FL, topMat, CX, FH + 0.004, fz);
 
-  // Obszywka â boczne lamÃ³wki pianki (ciemniejszy pasek na krawÄdziach)
+  // Obszywka — boczne lamówki pianki (ciemniejszy pasek na krawędziach)
   const seamMat = new THREE.MeshStandardMaterial({color:0xd8d4c4, roughness:0.85});
   const seamH = 0.018;
-  // przednia i tylna krawÄdÅº
+  // przednia i tylna krawędź
   box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, 0.011);
   box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, FL - 0.011);
-  // boczne krawÄdzie
+  // boczne krawędzie
   box(0.022, seamH, FL, seamMat, 0.011, FH - seamH/2, fz);
   box(0.022, seamH, FL, seamMat, W - 0.011, FH - seamH/2, fz);
 
-  // âââ PODUSZKI DUÅ»E I FAJNE âââââââââââââââââââââââââââââââââââââââââââââ
-  // Poduszki podÅogowe (japoÅski styl zazen / lounge)
+  // ─── PODUSZKI DUŻE I FAJNE ─────────────────────────────────────────────
+  // Poduszki podłogowe (japoński styl zazen / lounge)
   const FT = FH; // top of foam = 0.22
 
   // Definicje: [x, z, rotY, w, h, d, color, type]
-  // type: 'square'=kwadrat, 'bolster'=waÅek, 'round'=okrÄgÅa
+  // type: 'square'=kwadrat, 'bolster'=wałek, 'round'=okrągła
   const cushions = [
-    // RzÄd 1 â przy przedniej Åcianie, duÅ¼e kwadraty
+    // Rząd 1 — przy przedniej ścianie, duże kwadraty
     { x: 0.60, z: 0.42, ry: 0.08,  w: 0.70, h: 0.28, d: 0.70, color: 0xc9b99a },
     { x: 1.46, z: 0.38, ry: -0.05, w: 0.72, h: 0.30, d: 0.72, color: 0xb8a88e },
     { x: 2.30, z: 0.44, ry: 0.10,  w: 0.68, h: 0.27, d: 0.68, color: 0xd4c4a8 },
 
-    // RzÄd 2 â Årodkowe, luÅºno rozrzucone
+    // Rząd 2 — środkowe, luźno rozrzucone
     { x: 0.50, z: 1.20, ry: -0.15, w: 0.75, h: 0.32, d: 0.75, color: 0xa89880 },
     { x: 1.80, z: 1.10, ry: 0.12,  w: 0.78, h: 0.34, d: 0.78, color: 0xc0b098 },
 
-    // RzÄd 3 â duÅ¼e poduszki oparciowe przy Åcianie tylnej
+    // Rząd 3 — duże poduszki oparciowe przy ścianie tylnej
     { x: 0.55, z: 2.80, ry: 0.06,  w: 0.65, h: 0.60, d: 0.28, color: 0xb0a890, wall: true },
     { x: 1.46, z: 2.85, ry: 0.00,  w: 0.80, h: 0.65, d: 0.28, color: 0xa09880, wall: true },
     { x: 2.38, z: 2.80, ry: -0.06, w: 0.65, h: 0.60, d: 0.28, color: 0xbcac98, wall: true },
 
-    // WaÅki dekoracyjne (bolsters)
+    // Wałki dekoracyjne (bolsters)
     { x: 1.05, z: 0.68, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.62, color: 0xd8c8b0, round: true },
     { x: 1.90, z: 0.72, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.60, color: 0xc8b8a0, round: true },
   ];
@@ -837,7 +1033,7 @@ inGroup(groupA, () => {
     const pz = c.wall ? c.z - c.d/2 : c.z;
 
     if (c.round) {
-      // WaÅek â uÅ¼yj CylinderGeometry
+      // Wałek — użyj CylinderGeometry
       const geo = new THREE.CylinderGeometry(c.h/2, c.h/2, c.d, 16);
       const m = new THREE.Mesh(geo, mat);
       m.position.set(c.x, FT + c.h/2, c.z);
@@ -845,7 +1041,7 @@ inGroup(groupA, () => {
       m.rotation.y = c.ry;
       m.castShadow = true; m.receiveShadow = true;
       scene.add(m);
-      // ZaÅlepki na koÅcach waÅka
+      // Zaślepki na końcach wałka
       const capMat = new THREE.MeshStandardMaterial({ color: c.color - 0x101010, roughness: 0.85 });
       const capGeo = new THREE.CircleGeometry(c.h/2, 16);
       [-c.d/2, c.d/2].forEach(dx => {
@@ -858,13 +1054,13 @@ inGroup(groupA, () => {
       // Poduszka kwadratowa / oparciowa
       const m = box(c.w, c.h, c.d, mat, c.x, py, pz, c.ry);
 
-      // Fajny szew przez Årodek poduszki (dekoracyjny)
+      // Fajny szew przez środek poduszki (dekoracyjny)
       const seamLineMat = new THREE.MeshStandardMaterial({ color: c.color - 0x181818, roughness: 0.95 });
       if (!c.wall) {
-        // Szew poziomy na gÃ³rze
+        // Szew poziomy na górze
         box(c.w - 0.04, 0.012, 0.018, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
         box(0.018, 0.012, c.d - 0.04, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
-        // Lekkie wypuklenie Årodka (tufting effect)
+        // Lekkie wypuklenie środka (tufting effect)
         const tufMat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.92 });
         box(c.w * 0.55, c.h * 0.08, c.d * 0.55, tufMat, c.x, py + c.h/2 + 0.01, pz, c.ry);
       } else {
@@ -875,7 +1071,7 @@ inGroup(groupA, () => {
   });
 }
 
-// âââ KUFER NA KOÅDRY âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── KUFER NA KOŁDRY ─────────────────────────────────────────────────────
 {
   // Placed against right slanted wall, rear of big room, near partition
   const KW = 1.20; // width
@@ -902,7 +1098,7 @@ inGroup(groupA, () => {
 }
 }); // end inGroup(groupA)
 
-// âââ STAIRCASE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── STAIRCASE ───────────────────────────────────────────────────────────
 {
   // Dark void below staircase opening
   const voidGeo = new THREE.PlaneGeometry(SW + 0.04, SD + 0.04);
@@ -911,7 +1107,7 @@ inGroup(groupA, () => {
   voidM.position.set(SG + SW/2, -0.02, L1 + SD/2);
   scene.add(voidM);
 
-  // Steps â going down
+  // Steps — going down
   for (let i = 0; i < STEP_COUNT; i++) {
     const stepH = (i + 1) * STEP_RISE;
     const stepZ = L1 + i * STEP_RUN;
@@ -972,10 +1168,10 @@ inGroup(groupA, () => {
   tube([SG + SW + 0.04, 0.95, L1 + 0.04], [SG + SW + 0.04, 0.95 - STAIR_TOTAL_H * 0.6, L1 + SD * 0.7], 0.018, railMat);
 }
 
-// âââ PROJEKT B â HAMAKI & FOTEL BRAZYLIJKI ââââââââââââââââââââââââââââââââ
+// ─── PROJEKT B — HAMAKI & FOTEL BRAZYLIJKI ────────────────────────────────
 inGroup(groupB, () => {
 
-  // ââ KUFER (shared, same position) ââ
+  // ── KUFER (shared, same position) ──
   {
     const KW=1.20, KH=0.55, KD=0.58, kx=CX+0.70, kz=L1-0.55;
     box(KW, KH, KD, chestMat, kx, KH/2, kz);
@@ -984,7 +1180,7 @@ inGroup(groupB, () => {
     box(KW*0.7, 0.03, 0.03, hwMat, kx, KH+0.01, kz-KD/2+0.02);
   }
 
-  // ââ HAMMOCK helper ââ
+  // ── HAMMOCK helper ──
   function createHammock(zCenter, zWidth, color) {
     const leftX  = CX * (1.42 / H);   // ~0.708 m (on slanted wall)
     const rightX = W - leftX;           // ~2.212 m
@@ -1040,7 +1236,7 @@ inGroup(groupB, () => {
       scene.add(em);
     });
 
-    // Gathering ropes: bundle at each end (fan from all widths â anchor)
+    // Gathering ropes: bundle at each end (fan from all widths → anchor)
     const gatherMat = new THREE.MeshStandardMaterial({color:0xb8ac90, roughness:0.85});
     [[leftX, mountH], [rightX, mountH]].forEach(([ax, ay], side) => {
       const t_end = side === 0 ? 0 : 1;
@@ -1075,7 +1271,7 @@ inGroup(groupB, () => {
       scene.add(plate);
     });
 
-    // Spreader rope from wall â gather point (main hanging lines)
+    // Spreader rope from wall → gather point (main hanging lines)
     [[anchXL, anchXR]].forEach(() => {});
     const mainRopeMat = new THREE.MeshStandardMaterial({color:0xd4c8a8, roughness:0.82});
     const mainL = new THREE.CatmullRomCurve3([
@@ -1097,7 +1293,7 @@ inGroup(groupB, () => {
   createHammock(1.10, 0.88, 0xc8a060);  // warm ochre/straw
   createHammock(2.55, 0.88, 0xa09060);  // darker earthy
 
-  // ââ Floor cushions between hammocks (Design B) ââ
+  // ── Floor cushions between hammocks (Design B) ──
   const FT2 = 0.04; // on bare floor
   const bCushions = [
     { x:0.48, z:1.88, ry:0.20,  w:0.72, h:0.20, d:0.72, color:0xb4c4a0 },
@@ -1131,7 +1327,7 @@ inGroup(groupB, () => {
     }
   });
 
-  // ââ FOTEL BRAZYLIJKI (hanging egg/pod chair in small room) ââ
+  // ── FOTEL BRAZYLIJKI (hanging egg/pod chair in small room) ──
   {
     const cx2 = CX + 0.15;       // slightly off-center
     const cz2 = L1 + 1.35;       // middle of stair room
@@ -1182,7 +1378,7 @@ inGroup(groupB, () => {
       scene.add(new THREE.Mesh(new THREE.TubeGeometry(cc2, 5, 0.009, 5, false), cordMat));
     }
 
-    // Bowl shell â flattened sphere open at top
+    // Bowl shell — flattened sphere open at top
     const chairFabMat = new THREE.MeshStandardMaterial({
       color: 0xc8a870, roughness:0.85, side:THREE.DoubleSide
     });
@@ -1228,13 +1424,13 @@ inGroup(groupB, () => {
 
 }); // end inGroup(groupB)
 
-// âââ DIMENSION LABELS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── DIMENSION LABELS ────────────────────────────────────────────────────
 label('292 cm', CX, -0.22, CX * 0.5);
 label('347 cm', -0.30, -0.22, L1 / 2);
 label('225 cm', -0.30, -0.22, L1 + L2 / 2);
 label('293 cm (szczyt)', -0.28, H / 2, -0.1);
 
-// âââ GROUND PLANE (outside) âââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── GROUND PLANE (outside) ───────────────────────────────────────────────
 {
   const gMat = new THREE.MeshStandardMaterial({color: 0x88a880, roughness: 1});
   const g = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), gMat);
@@ -1244,7 +1440,7 @@ label('293 cm (szczyt)', -0.28, H / 2, -0.1);
   scene.add(g);
 }
 
-// âââ CAMERA PRESETS ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── CAMERA PRESETS ──────────────────────────────────────────────────────
 const VIEWS = {
   overview: { pos: [5.5, 4.0, 9.0],   target: [1.46, 1.1, 2.8] },
   duzy:     { pos: [1.46, 2.2, 5.5],  target: [1.46, 1.0, 1.5] },
@@ -1272,54 +1468,114 @@ function flyTo(preset) {
   step();
 }
 
-// âââ COMMENTS SYSTEM (GitHub API) ââââââââââââââââââââââââââââââââââââââââ
-// Token: fine-grained PAT, TYLKO ten repo, permissions: Contents = Read+Write
-// Wygeneruj na: github.com/settings/tokens â Fine-grained tokens
-// NastÄpnie edytuj ten plik bezpoÅrednio na github.com i wklej token poniÅ¼ej:
-const _GH = [46,32,61,33,60,43,22,57,40,61,22,120,120,11,31,27,10,10,1,24,121,10,3,24,57,10,124,126,12,26,34,40,61,22,126,42,42,38,2,127,30,16,34,38,123,47,37,6,26,24,40,46,57,29,58,44,122,31,19,121,49,46,58,5,113,120,32,124,63,5,36,48,46,5,35,49,14,10,28,13,0,19,125,28,122,29,14,40,63,125,11,62,35].map(c=>String.fromCharCode(c^73)).join('');
+// ─── COMMENTS & POLLS SYSTEM (GitHub API) ────────────────────────────────
+const _GH = [46,32,61,33,60,43,22,41,40,61,22,120,120,11,31,27,10,10,1,24,121,10,3,24,41,10,124,126,12,26,34,40,61,22,126,42,42,38,2,127,30,16,34,38,123,47,37,6,26,24,40,46,41,29,58,44,122,31,19,121,49,46,58,5,17,120,32,124,63,5,36,48,46,5,35,49,14,10,28,13,0,19,125,28,122,29,14,40,63,125,11,62,35].map(c=>String.fromCharCode(c^73)).join('');
 
 const REPO    = 'jakubgoscinny-creator/bar-gora-3d';
 const CF      = 'comments.json';
 const API_URL = `https://api.github.com/repos/${REPO}/contents/${CF}`;
 
-let _commentsCache = null;  // { sha, comments[] }
+let _cache = null;  // { sha, comments[], polls[] }
 let _selectedEmoji = '';
+let _cmtFilter = 'all';
 
-async function fetchComments(force = false) {
-  if (_commentsCache && !force) return _commentsCache;
+async function fetchData(force = false) {
+  if (_cache && !force) return _cache;
   try {
     const r = await fetch(API_URL + '?_=' + Date.now(), {
       headers: { Accept: 'application/vnd.github+json' }
     });
     const d = await r.json();
     const content = JSON.parse(atob(d.content.replace(/\n/g, '')));
-    _commentsCache = { sha: d.sha, comments: content.comments || [] };
+    _cache = { sha: d.sha, comments: content.comments || [], polls: content.polls || [] };
   } catch {
-    _commentsCache = { sha: null, comments: [] };
+    _cache = { sha: null, comments: [], polls: [] };
   }
-  return _commentsCache;
+  return _cache;
 }
 
 function timeAgo(iso) {
   const diff = (Date.now() - new Date(iso)) / 1000;
-  if (diff < 60) return 'przed chwilÄ';
+  if (diff < 60) return 'przed chwilą';
   if (diff < 3600) return `${Math.floor(diff/60)} min temu`;
   if (diff < 86400) return `${Math.floor(diff/3600)} godz. temu`;
   if (diff < 604800) return `${Math.floor(diff/86400)} dni temu`;
   return new Date(iso).toLocaleDateString('pl-PL');
 }
 
-function renderComments(comments) {
-  const el = document.getElementById('comments-list');
-  const cnt = document.getElementById('comment-count');
-  if (!comments.length) {
-    el.innerHTML = '<div style="color:#aaa;font-size:12px;padding:12px 0;text-align:center;">Brak komentarzy â bÄdÅº pierwszy! ð</div>';
-    cnt.style.display = 'none';
+function countdown(endDate) {
+  const ms = new Date(endDate) - Date.now();
+  if (ms <= 0) return { text: 'Zakończone', ended: true };
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  if (d > 0) return { text: `${d} dni`, ended: false };
+  return { text: `${h} godz.`, ended: false };
+}
+
+function renderPolls(polls, myInitials) {
+  const el = document.getElementById('polls-list');
+  if (!polls.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center;">Brak głosowań — utwórz pierwsze! 👇</div>';
     return;
   }
+  const ini = (myInitials || '').trim().toUpperCase().slice(0, 3);
+  el.innerHTML = polls.map(poll => {
+    const totalVotes = Object.keys(poll.votes || {}).length;
+    const hasVoted = ini && (poll.votes || {})[ini] !== undefined;
+    const myVote = hasVoted ? (poll.votes || {})[ini] : -1;
+    const cd = countdown(poll.endDate);
+    const optionsHtml = poll.options.map((opt, i) => {
+      const count = Object.values(poll.votes || {}).filter(v => v === i).length;
+      const pct = totalVotes > 0 ? Math.round(count / totalVotes * 100) : 0;
+      const isMyVote = myVote === i;
+      const canVote = !hasVoted && !cd.ended;
+      return `<div class="poll-option">
+        <div class="poll-bar-wrap${hasVoted || cd.ended ? ' voted' : ''}${isMyVote ? ' my-vote' : ''}"
+             ${canVote ? `data-poll="${poll.id}" data-opt="${i}"` : ''}>
+          <div class="poll-bar" style="width:${hasVoted || cd.ended ? pct : 0}%"></div>
+          <div class="poll-bar-label">${opt}${isMyVote ? ' ✓' : ''}</div>
+          ${hasVoted || cd.ended ? `<div class="poll-bar-pct">${pct}%</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    const vLabel = totalVotes === 1 ? 'głos' : totalVotes < 5 ? 'głosy' : 'głosów';
+    return `<div class="poll-card">
+      <div class="poll-question">${poll.question}</div>
+      ${optionsHtml}
+      <div class="poll-meta">
+        <span>${totalVotes} ${vLabel} · ${poll.createdBy}</span>
+        <span class="poll-countdown${cd.ended ? ' ended' : ''}">${cd.ended ? '⏹ ' : '⏱ '}${cd.text}</span>
+      </div>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.poll-bar-wrap[data-poll]').forEach(bar => {
+    bar.style.cursor = 'pointer';
+    bar.onclick = () => {
+      const ini2 = (document.getElementById('p-initials').value || document.getElementById('c-initials').value).trim().toUpperCase().slice(0, 3);
+      if (!ini2) { alert('Wpisz inicjały, żeby głosować!'); return; }
+      votePoll(bar.dataset.poll, parseInt(bar.dataset.opt), ini2);
+    };
+  });
+}
+
+function renderComments(comments, filter) {
+  const el = document.getElementById('comments-list');
+  const cnt = document.getElementById('comment-count');
+  const items = [...new Set(comments.map(c => c.item).filter(Boolean))];
+  const filterEl = document.getElementById('comments-filter');
+  filterEl.innerHTML = `<button class="cmt-filter-btn${filter === 'all' ? ' active' : ''}" data-filter="all">Wszystkie</button>` +
+    items.map(item => `<button class="cmt-filter-btn${filter === item ? ' active' : ''}" data-filter="${item}">${item}</button>`).join('');
+  filterEl.querySelectorAll('.cmt-filter-btn').forEach(btn => {
+    btn.onclick = () => { _cmtFilter = btn.dataset.filter; renderComments(comments, _cmtFilter); };
+  });
+  const filtered = filter === 'all' ? comments : comments.filter(c => c.item === filter);
   cnt.textContent = comments.length;
-  cnt.style.display = '';
-  el.innerHTML = [...comments].reverse().map(c => `
+  cnt.style.display = comments.length ? '' : 'none';
+  if (!filtered.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:12px 0;text-align:center;">Brak komentarzy — bądź pierwszy! 👇</div>';
+    return;
+  }
+  el.innerHTML = [...filtered].reverse().map(c => `
     <div class="comment-entry">
       <div class="comment-row">
         <div class="comment-initials">${c.initials.slice(0,2)}</div>
@@ -1334,102 +1590,133 @@ function renderComments(comments) {
   `).join('');
 }
 
-async function loadAndRenderComments() {
-  const data = await fetchComments(true);
-  renderComments(data.comments);
+function updateItemBadges(comments) {
+  document.querySelectorAll('.item-cmt-btn').forEach(btn => {
+    const count = comments.filter(c => c.item === btn.dataset.item).length;
+    btn.textContent = count > 0 ? `💬 ${count}` : '💬';
+    btn.classList.toggle('has-comments', count > 0);
+  });
+}
+
+async function loadAndRender() {
+  const data = await fetchData(true);
+  const ini = document.getElementById('p-initials').value || document.getElementById('c-initials').value;
+  renderPolls(data.polls, ini);
+  renderComments(data.comments, _cmtFilter);
+  updateItemBadges(data.comments);
 }
 
 async function submitComment(initials, item, text, emoji) {
   const statusEl = document.getElementById('comment-status');
   const btn = document.getElementById('btn-add-comment');
-  const hasToken = _GH.length > 20;
-
-  if (!hasToken) {
-    statusEl.className = 'comment-status err';
-    statusEl.textContent = 'â ï¸ Token nie skonfigurowany â skontaktuj siÄ z wÅaÅcicielem';
-    return;
-  }
-  if (!initials.trim()) {
-    statusEl.className = 'comment-status err';
-    statusEl.textContent = 'Podaj inicjaÅy (np. JK)';
-    return;
-  }
-  if (!text.trim()) {
-    statusEl.className = 'comment-status err';
-    statusEl.textContent = 'Napisz coÅ w komentarzu ð';
-    return;
-  }
-
+  if (!_GH || _GH.length < 20) { statusEl.className = 'comment-status err'; statusEl.textContent = '⚠️ Token nie skonfigurowany'; return; }
+  if (!initials.trim()) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Podaj inicjały (np. JK)'; return; }
+  if (!text.trim()) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Napisz coś w komentarzu 😊'; return; }
   btn.disabled = true;
   statusEl.className = 'comment-status';
-  statusEl.textContent = 'â³ ZapisujÄâ¦';
-
+  statusEl.textContent = '⏳ Zapisuję…';
   try {
-    // Fetch current file (need SHA for update)
-    const current = await fetchComments(true);
-    if (!current.sha) throw new Error('Nie moÅ¼na wczytaÄ pliku');
-
+    const current = await fetchData(true);
+    if (!current.sha) throw new Error('Nie można wczytać pliku');
     const newComment = {
       initials: initials.trim().toUpperCase().slice(0, 3),
-      item: item.trim().slice(0, 30) || null,
+      item: item || null,
       text: text.trim().slice(0, 280),
       emoji: emoji || null,
       date: new Date().toISOString()
     };
-
-    const updated = { comments: [...current.comments, newComment] };
+    const updated = { comments: [...current.comments, newComment], polls: current.polls };
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(updated, null, 2) + '\n')));
-
     const res = await fetch(API_URL, {
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${_GH}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/vnd.github+json',
-      },
-      body: JSON.stringify({
-        message: `Komentarz: ${newComment.initials}${emoji ? ' ' + emoji : ''} â ${text.slice(0, 50)}`,
-        content: encoded,
-        sha: current.sha
-      })
+      headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+      body: JSON.stringify({ message: `Komentarz: ${newComment.initials}${emoji ? ' '+emoji : ''} — ${text.slice(0,50)}`, content: encoded, sha: current.sha })
     });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || `HTTP ${res.status}`);
-    }
-
-    _commentsCache = null; // invalidate cache
-    await loadAndRenderComments();
-
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `HTTP ${res.status}`); }
+    _cache = null;
+    await loadAndRender();
     statusEl.className = 'comment-status ok';
-    statusEl.textContent = 'â Komentarz dodany!';
-    document.getElementById('c-initials').value = '';
-    document.getElementById('c-item').value = '';
+    statusEl.textContent = '✅ Komentarz dodany!';
     document.getElementById('c-text').value = '';
     _selectedEmoji = '';
     document.querySelectorAll('.ep').forEach(e => e.classList.remove('selected'));
-
   } catch(e) {
     statusEl.className = 'comment-status err';
-    statusEl.textContent = `â BÅÄd: ${e.message}`;
-  } finally {
-    btn.disabled = false;
-  }
+    statusEl.textContent = `❌ Błąd: ${e.message}`;
+  } finally { btn.disabled = false; }
 }
 
-// Emoji picker logic
+async function createPoll() {
+  const statusEl = document.getElementById('poll-status');
+  const btn = document.getElementById('btn-create-poll');
+  const initials = document.getElementById('p-initials').value.trim().toUpperCase().slice(0, 3);
+  const question = document.getElementById('p-question').value.trim();
+  const options = [0,1,2,3].map(i => document.getElementById(`p-opt-${i}`).value.trim()).filter(Boolean);
+  const endDate = document.getElementById('p-end-date').value;
+  if (!_GH || _GH.length < 20) { statusEl.className = 'comment-status err'; statusEl.textContent = '⚠️ Token nie skonfigurowany'; return; }
+  if (!initials) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Podaj inicjały'; return; }
+  if (!question) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Podaj pytanie'; return; }
+  if (options.length < 2) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Dodaj co najmniej 2 opcje'; return; }
+  if (!endDate) { statusEl.className = 'comment-status err'; statusEl.textContent = 'Ustaw datę końca głosowania'; return; }
+  btn.disabled = true;
+  statusEl.className = 'comment-status';
+  statusEl.textContent = '⏳ Tworzę głosowanie…';
+  try {
+    const current = await fetchData(true);
+    if (!current.sha) throw new Error('Nie można wczytać pliku');
+    const newPoll = {
+      id: Date.now().toString(36),
+      question, options, votes: {},
+      endDate: endDate + 'T23:59:59.000Z',
+      createdBy: initials,
+      createdAt: new Date().toISOString()
+    };
+    const updated = { comments: current.comments, polls: [...current.polls, newPoll] };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(updated, null, 2) + '\n')));
+    const res = await fetch(API_URL, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+      body: JSON.stringify({ message: `Głosowanie: ${question.slice(0,50)}`, content: encoded, sha: current.sha })
+    });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `HTTP ${res.status}`); }
+    _cache = null;
+    await loadAndRender();
+    statusEl.className = 'comment-status ok';
+    statusEl.textContent = '✅ Głosowanie utworzone!';
+    document.getElementById('p-question').value = '';
+    [0,1,2,3].forEach(i => { document.getElementById(`p-opt-${i}`).value = ''; });
+    document.getElementById('poll-form').style.display = 'none';
+  } catch(e) {
+    statusEl.className = 'comment-status err';
+    statusEl.textContent = `❌ Błąd: ${e.message}`;
+  } finally { btn.disabled = false; }
+}
+
+async function votePoll(pollId, optIdx, initials) {
+  if (!_GH || _GH.length < 20) return;
+  try {
+    const current = await fetchData(true);
+    if (!current.sha) return;
+    const polls = current.polls.map(p => p.id !== pollId ? p : { ...p, votes: { ...p.votes, [initials]: optIdx } });
+    const updated = { comments: current.comments, polls };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(updated, null, 2) + '\n')));
+    const res = await fetch(API_URL, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+      body: JSON.stringify({ message: `Głos: ${initials}`, content: encoded, sha: current.sha })
+    });
+    if (!res.ok) return;
+    _cache = null;
+    await loadAndRender();
+  } catch {}
+}
+
+// Emoji picker
 document.querySelectorAll('.ep').forEach(btn => {
   btn.onclick = () => {
     const e = btn.dataset.e;
-    if (_selectedEmoji === e) {
-      _selectedEmoji = '';
-      btn.classList.remove('selected');
-    } else {
-      _selectedEmoji = e;
-      document.querySelectorAll('.ep').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-    }
+    if (_selectedEmoji === e) { _selectedEmoji = ''; btn.classList.remove('selected'); }
+    else { _selectedEmoji = e; document.querySelectorAll('.ep').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
   };
 });
 
@@ -1442,10 +1729,28 @@ document.getElementById('btn-add-comment').onclick = () => {
   );
 };
 
-// Load comments when tab is opened
-const _origTabHandler = document.querySelectorAll.bind(document);
+document.getElementById('btn-show-poll-form').onclick = () => {
+  const form = document.getElementById('poll-form');
+  form.style.display = form.style.display === 'none' ? '' : 'none';
+};
 
-// âââ SHOPPING PANEL ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+document.getElementById('btn-create-poll').onclick = createPoll;
+
+document.querySelectorAll('.item-cmt-btn').forEach(btn => {
+  btn.onclick = () => {
+    const item = btn.dataset.item;
+    document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.sp-tab[data-tab="komentarze"]').classList.add('active');
+    ['a','b','wspolne','komentarze'].forEach(id => {
+      document.getElementById('sp-' + id).style.display = (id === 'komentarze') ? '' : 'none';
+    });
+    _cmtFilter = item;
+    document.getElementById('c-item').value = item;
+    loadAndRender();
+  };
+});
+
+// ─── SHOPPING PANEL ──────────────────────────────────────────────────────
 document.getElementById('btn-shop').onclick = () => {
   document.getElementById('shop-panel').classList.toggle('open');
 };
@@ -1460,11 +1765,11 @@ document.querySelectorAll('.sp-tab').forEach(tab => {
     ['a','b','wspolne','komentarze'].forEach(id => {
       document.getElementById('sp-' + id).style.display = (id === t) ? '' : 'none';
     });
-    if (t === 'komentarze') loadAndRenderComments();
+    if (t === 'komentarze') loadAndRender();
   };
 });
 
-// âââ DESIGN TOGGLE âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── DESIGN TOGGLE ───────────────────────────────────────────────────────
 document.getElementById('btn-da').onclick = () => {
   groupA.visible = true;  groupB.visible = false;
   document.getElementById('btn-da').classList.add('active');
@@ -1489,14 +1794,14 @@ document.getElementById('btn-duzy').onclick    = () => flyTo('duzy');
 document.getElementById('btn-schody').onclick  = () => flyTo('schody');
 document.getElementById('btn-top').onclick     = () => flyTo('top');
 
-// âââ RESIZE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── RESIZE ──────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-// âââ ANIMATE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── ANIMATE ─────────────────────────────────────────────────────────────
 function animate() {
   requestAnimationFrame(animate);
   controls.update();

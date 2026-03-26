@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Bar Góra — Model 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #dce8f4; font-family: 'Segoe UI', sans-serif; }
+  canvas { display: block; }
+
+  #info {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(255,255,255,0.93); color: #333;
+    padding: 16px 20px; border-radius: 12px;
+    font-size: 12.5px; line-height: 1.8;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13); max-width: 240px;
+  }
+  #info h2 { font-size: 15px; margin-bottom: 6px; color: #111; font-weight: 700; }
+  #info .section {
+    font-weight: 700; color: #666; margin-top: 10px; margin-bottom: 2px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  #info .dim { color: #444; }
+  #info b { color: #222; }
+
+  #legend {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.93);
+    padding: 14px 18px; border-radius: 12px;
+    font-size: 12px; line-height: 2.1;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  }
+  #legend h3 { font-size: 13px; margin-bottom: 4px; color: #222; font-weight: 700; }
+  .dot {
+    display: inline-block; width: 11px; height: 11px;
+    border-radius: 2px; margin-right: 7px; vertical-align: middle;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  #controls {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.85); color: #555;
+    padding: 8px 22px; border-radius: 8px; font-size: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1); white-space: nowrap;
+  }
+
+  #views {
+    position: absolute; bottom: 56px; right: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .vbtn {
+    background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.12);
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.15s;
+  }
+  .vbtn:hover { background: #fff; }
+</style>
+</head>
+<body>
+
+<div id="info">
+  <h2>Bar Góra — Model 3D</h2>
+
+  <div class="section">Duży pokój (A-frame)</div>
+  <div class="dim">Szerokość podłogi: <b>292 cm</b></div>
+  <div class="dim">Długość: <b>347 cm</b></div>
+  <div class="dim">Wysokość szczytu: <b>293 cm</b></div>
+  <div class="dim">Kąt nachylenia ścian: <b>60°</b></div>
+
+  <div class="section">Mały pokój (schody)</div>
+  <div class="dim">Głębokość: <b>225 cm</b></div>
+  <div class="dim">Schody: <b>68 cm</b> szer.</div>
+  <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
+
+  <div class="section">Wyposażenie (duży pokój)</div>
+  <div class="dim">Mata piankowa: <b>3 × 3 m × 22 cm</b></div>
+  <div class="dim">Poduszki dekoracyjne</div>
+  <div class="dim">Kufer na kołdry</div>
+</div>
+
+<div id="legend">
+  <h3>Legenda</h3>
+  <div><span class="dot" style="background:#f8f6f0;"></span> Ściany i sufit (białe)</div>
+  <div><span class="dot" style="background:#b4b2ac;"></span> Podłoga (szara)</div>
+  <div><span class="dot" style="background:#edead8;"></span> Mata piankowa 3×3 m</div>
+  <div><span class="dot" style="background:#e2c4a0;"></span> Poduszki</div>
+  <div><span class="dot" style="background:#7a5a38;"></span> Kufer na kołdry</div>
+  <div><span class="dot" style="background:#c8ccd4;"></span> Schody</div>
+  <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
+</div>
+
+<div id="views">
+  <button class="vbtn" id="btn-overview">Widok ogólny</button>
+  <button class="vbtn" id="btn-duzy">Duży pokój</button>
+  <button class="vbtn" id="btn-schody">Schody</button>
+  <button class="vbtn" id="btn-top">Z góry</button>
+</div>
+
+<div id="controls">LPM + przeciąganie = obrót &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesunięcie</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ─── SCENE SETUP ─────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xd4e4f0);
+scene.fog = new THREE.Fog(0xd4e4f0, 18, 40);
+
+const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.05, 60);
+camera.position.set(5.5, 4.0, 9.0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.target.set(1.46, 1.1, 2.8);
+controls.minDistance = 0.5;
+controls.maxDistance = 20;
+
+// ─── LIGHTING ────────────────────────────────────────────────────────────
+const ambLight = new THREE.AmbientLight(0xffffff, 0.60);
+scene.add(ambLight);
+
+const sun = new THREE.DirectionalLight(0xfff8f0, 1.15);
+sun.position.set(5, 9, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -9; sun.shadow.camera.right = 9;
+sun.shadow.camera.top = 8;  sun.shadow.camera.bottom = -4;
+sun.shadow.camera.far = 30; sun.shadow.bias = -0.001;
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0xe0ecff, 0.30);
+fill.position.set(-4, 5, -4);
+scene.add(fill);
+
+const winLight = new THREE.PointLight(0xfff5e0, 0.8, 6, 1.5);
+winLight.position.set(1.46, 1.8, 0.3);
+scene.add(winLight);
+
+// ─── DIMENSIONS ──────────────────────────────────────────────────────────
+const W  = 2.92;   // floor width (both rooms)
+const L1 = 3.47;   // big room length   (z: 0 → L1)
+const L2 = 2.25;   // stair room length (z: L1 → L1+L2)
+const LT = L1 + L2; // total 5.72 m
+const H  = 2.93;   // ridge height
+const CX = W / 2;  // ridge center x = 1.46
+
+const DW = 0.85;          // doorway width
+const DH = 1.90;          // doorway height
+const DX = CX - DW / 2;  // doorway left edge (centered)
+
+const SW  = 0.68; // stair tread width (x-dir)
+const SG  = 0.50; // gap stairs→left wall
+const SD  = 1.40; // stair run depth (z-dir of the opening)
+const STEP_COUNT = 12;
+const STEP_RISE  = 0.22;
+const STEP_RUN   = SD / STEP_COUNT;
+
+// ─── MATERIALS ───────────────────────────────────────────────────────────
+const wallMat  = new THREE.MeshStandardMaterial({ color: 0xf8f6f0, roughness: 0.88, side: THREE.DoubleSide });
+const floorMat = new THREE.MeshStandardMaterial({ color: 0xb4b2ac, roughness: 0.92, metalness: 0.02 });
+const foamMat  = new THREE.MeshStandardMaterial({ color: 0xecead6, roughness: 0.96 });
+const chestMat = new THREE.MeshStandardMaterial({ color: 0x7a5a38, roughness: 0.82, metalness: 0.05 });
+const lidMat   = new THREE.MeshStandardMaterial({ color: 0x8c6a48, roughness: 0.75 });
+const glassMat = new THREE.MeshPhysicalMaterial({
+  color: 0x90c0e0, roughness: 0.05, metalness: 0,
+  transmission: 0.75, transparent: true, opacity: 0.40, side: THREE.DoubleSide
+});
+const stairMat = new THREE.MeshStandardMaterial({ color: 0xc8ccd4, roughness: 0.88 });
+const hwMat    = new THREE.MeshStandardMaterial({ color: 0x949080, metalness: 0.85, roughness: 0.25 });
+const darkMat  = new THREE.MeshStandardMaterial({ color: 0x111114, roughness: 1 });
+
+const cushColors = [0xe2c4a0, 0xd4b090, 0xc89888, 0xbca080, 0xd8c0a8, 0xe6d4b8];
+
+// ─── GEOMETRY HELPERS ────────────────────────────────────────────────────
+
+// Add a simple box
+function box(w, h, d, mat, x, y, z, ry = 0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.rotation.y = ry;
+  m.castShadow = true; m.receiveShadow = true;
+  scene.add(m); return m;
+}
+
+// Add a horizontal floor plane
+function floorPlane(w, d, mat, cx, z_center) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat);
+  m.rotation.x = -Math.PI / 2;
+  m.position.set(cx, 0, z_center);
+  m.receiveShadow = true; scene.add(m); return m;
+}
+
+// Add a ShapeGeometry wall (in XY plane, placed at given z)
+function shapeWall(shape, z, mat) {
+  const m = new THREE.Mesh(new THREE.ShapeGeometry(shape, 4), mat);
+  m.position.z = z;
+  m.receiveShadow = true; m.castShadow = true;
+  scene.add(m); return m;
+}
+
+// Build a quad from 4 world-space corners (for slanted surfaces)
+function slopedFace(p0, p1, p2, p3, mat) {
+  const g = new THREE.BufferGeometry();
+  const verts = new Float32Array([
+    ...p0, ...p1, ...p2,
+    ...p0, ...p2, ...p3,
+  ]);
+  g.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, mat);
+  m.receiveShadow = true; m.castShadow = true;
+  scene.add(m); return m;
+}
+
+// Tube between two points
+function tube(p0, p1, r, mat) {
+  const curve = new THREE.LineCurve3(new THREE.Vector3(...p0), new THREE.Vector3(...p1));
+  const g = new THREE.TubeGeometry(curve, 1, r, 6, false);
+  const m = new THREE.Mesh(g, mat);
+  m.castShadow = true; scene.add(m); return m;
+}
+
+// Sprite label
+function label(text, x, y, z) {
+  const c = document.createElement('canvas');
+  c.width = 300; c.height = 68;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = 'rgba(20,20,30,0.72)';
+  ctx.beginPath(); ctx.roundRect(0,0,300,68,10); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 26px Segoe UI';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 150, 34);
+  const tex = new THREE.CanvasTexture(c);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+  sp.position.set(x, y, z);
+  sp.scale.set(0.9, 0.22, 1);
+  scene.add(sp);
+}
+
+// ─── A-FRAME STRUCTURE ───────────────────────────────────────────────────
+
+// Full combined floor
+floorPlane(W, LT, floorMat, CX, LT / 2);
+
+// Left slanted wall/roof — full building length
+// p0=(0,0,0), p1=(0,0,LT), p2=(CX,H,LT), p3=(CX,H,0)
+slopedFace([0,0,0], [0,0,LT], [CX,H,LT], [CX,H,0], wallMat);
+
+// Right slanted wall/roof — full building length
+slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
+
+// ─── FRONT END WALL (z=0) — triangle with trapezoid window ───────────────
+{
+  const s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
+
+  // Trapezoidal window opening (like in photos)
+  const win = new THREE.Path();
+  win.moveTo(CX - 0.52, 0.88);
+  win.lineTo(CX + 0.52, 0.88);
+  win.lineTo(CX + 0.16, 2.15);
+  win.lineTo(CX - 0.16, 2.15);
+  win.closePath();
+  s.holes.push(win);
+  shapeWall(s, 0, wallMat);
+
+  // Window glass pane
+  const wg = new THREE.Shape();
+  wg.moveTo(CX - 0.52, 0.88);
+  wg.lineTo(CX + 0.52, 0.88);
+  wg.lineTo(CX + 0.16, 2.15);
+  wg.lineTo(CX - 0.16, 2.15);
+  wg.closePath();
+  const glassM = new THREE.Mesh(new THREE.ShapeGeometry(wg, 3), glassMat);
+  glassM.position.z = 0.01;
+  scene.add(glassM);
+
+  // Window frame (thin box around opening)
+  const frameGeo = new THREE.BoxGeometry(1.10, 0.06, 0.06);
+  box(1.10, 0.06, 0.06, new THREE.MeshStandardMaterial({color:0xf0ece2, roughness:0.5}), CX, 0.87, 0.03);
+}
+
+// ─── BACK END WALL (z=LT) — solid triangle ───────────────────────────────
+{
+  const s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
+  shapeWall(s, LT, wallMat);
+}
+
+// ─── INTERIOR PARTITION WALL (z=L1) — triangle with centered doorway ─────
+{
+  const s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
+
+  // Door hole
+  const door = new THREE.Path();
+  door.moveTo(DX, 0);
+  door.lineTo(DX + DW, 0);
+  door.lineTo(DX + DW, DH);
+  door.lineTo(DX, DH);
+  door.closePath();
+  s.holes.push(door);
+  shapeWall(s, L1, wallMat);
+
+  // Door frame
+  const fMat = new THREE.MeshStandardMaterial({color: 0xf0ece0, roughness:0.6});
+  box(DW + 0.08, 0.06, 0.08, fMat, CX, DH + 0.03, L1); // top
+  box(0.06, DH, 0.08, fMat, DX - 0.03, DH/2, L1);       // left
+  box(0.06, DH, 0.08, fMat, DX + DW + 0.03, DH/2, L1);  // right
+}
+
+// ─── RIDGE BEAM (kalenica) ────────────────────────────────────────────────
+{
+  const ridgeMat = new THREE.MeshStandardMaterial({color:0xf0ece0, roughness:0.7});
+  tube([CX, H + 0.02, 0], [CX, H + 0.02, LT], 0.045, ridgeMat);
+}
+
+// ─── RAFTERS (krokwie) ───────────────────────────────────────────────────
+{
+  const rafterMat = new THREE.MeshStandardMaterial({color:0xf4f0e8, roughness:0.8});
+  const RAFTER_N = 9; // 8 bays
+  for (let i = 0; i <= RAFTER_N; i++) {
+    const z = (i / RAFTER_N) * LT;
+    tube([0, 0, z], [CX, H, z], 0.025, rafterMat);
+    tube([W, 0, z], [CX, H, z], 0.025, rafterMat);
+  }
+  // Collar ties (poziome belki spinające)
+  const TIE_H = 1.5;
+  for (let i = 1; i <= RAFTER_N - 1; i++) {
+    if (i % 2 === 0) {
+      const z = (i / RAFTER_N) * LT;
+      const xAtTie = TIE_H * CX / H;
+      const tieX0 = xAtTie;
+      const tieX1 = W - xAtTie;
+      tube([tieX0, TIE_H, z], [tieX1, TIE_H, z], 0.02, rafterMat);
+    }
+  }
+  // Purlin (płatew boczna) — horizontal beam along each slope
+  const PURLIN_T = 0.5; // fraction along rafter
+  const px = CX * PURLIN_T;
+  const py = H * PURLIN_T;
+  tube([px,     py, 0], [px,     py, LT], 0.02, rafterMat);
+  tube([W - px, py, 0], [W - px, py, LT], 0.02, rafterMat);
+}
+
+// ─── FOAM MAT (mata piankowa 3×3 m × 22 cm) ─────────────────────────────
+{
+  const FW = 2.90; // 3m capped to room width
+  const FL = 3.00;
+  const FH = 0.22;
+  // Center in big room, slight gap from front wall
+  const fz = 0.30 + FL / 2; // starts 30cm from front wall
+  box(FW, FH, FL, foamMat, CX, FH / 2, fz);
+
+  // Foam edge highlight (thin lighter strip on top)
+  const edgeMat = new THREE.MeshStandardMaterial({color:0xf5f2e2, roughness:0.95});
+  box(FW, 0.01, FL, edgeMat, CX, FH + 0.005, fz);
+
+  // ─── CUSHIONS ──────────────────────────────────────────────────────────
+  const cushPos = [
+    [CX - 1.0, FH + 0.13, 0.55],
+    [CX - 0.3, FH + 0.13, 0.48],
+    [CX + 0.5, FH + 0.13, 0.52],
+    [CX + 1.0, FH + 0.13, 0.60],
+    [CX - 0.7, FH + 0.13, 1.00],
+    [CX + 0.7, FH + 0.14, 0.95],
+  ];
+  const cushSizes = [
+    [0.48, 0.22, 0.44],
+    [0.42, 0.20, 0.40],
+    [0.44, 0.22, 0.42],
+    [0.46, 0.21, 0.44],
+    [0.52, 0.24, 0.48],
+    [0.44, 0.22, 0.42],
+  ];
+  const cushRots = [0.1, -0.08, 0.05, -0.12, 0.15, -0.06];
+  cushPos.forEach((p, i) => {
+    const mat = new THREE.MeshStandardMaterial({
+      color: cushColors[i], roughness: 0.92
+    });
+    box(cushSizes[i][0], cushSizes[i][1], cushSizes[i][2], mat, p[0], p[1], p[2], cushRots[i]);
+  });
+}
+
+// ─── KUFER NA KOŁDRY ─────────────────────────────────────────────────────
+{
+  // Placed against right slanted wall, rear of big room, near partition
+  const KW = 1.20; // width
+  const KH = 0.55; // height (body)
+  const KD = 0.58; // depth
+  const kx = CX + 0.70; // toward right wall
+  const kz = L1 - 0.55; // near partition wall
+
+  // Body
+  box(KW, KH, KD, chestMat, kx, KH / 2, kz);
+  // Lid (slightly lighter)
+  box(KW + 0.03, 0.10, KD + 0.03, lidMat, kx, KH + 0.05, kz);
+
+  // Metal hardware
+  // Front center handle bar
+  box(0.18, 0.03, 0.025, hwMat, kx, KH * 0.45, kz + KD/2 + 0.01);
+  // Corner reinforcements (4 on front)
+  [[-KW/2+0.04, KH*0.25], [KW/2-0.04, KH*0.25],
+   [-KW/2+0.04, KH*0.75], [KW/2-0.04, KH*0.75]].forEach(([dx, dy]) => {
+    box(0.03, 0.06, 0.02, hwMat, kx+dx, dy, kz+KD/2+0.01);
+  });
+  // Hinge (top back)
+  box(KW * 0.7, 0.03, 0.03, hwMat, kx, KH + 0.01, kz - KD/2 + 0.02);
+}
+
+// ─── STAIRCASE ───────────────────────────────────────────────────────────
+{
+  // Dark void below staircase opening
+  const voidGeo = new THREE.PlaneGeometry(SW + 0.04, SD + 0.04);
+  const voidM = new THREE.Mesh(voidGeo, darkMat);
+  voidM.rotation.x = -Math.PI / 2;
+  voidM.position.set(SG + SW/2, -0.02, L1 + SD/2);
+  scene.add(voidM);
+
+  // Steps — going down
+  for (let i = 0; i < STEP_COUNT; i++) {
+    const stepH = (i + 1) * STEP_RISE;
+    const stepZ = L1 + i * STEP_RUN;
+    // Tread
+    box(SW, 0.04, STEP_RUN + 0.01, stairMat, SG + SW/2, -stepH + STEP_RISE*0.5, stepZ + STEP_RUN/2);
+    // Riser (front face)
+    if (i < STEP_COUNT - 1) {
+      box(SW, STEP_RISE - 0.04, 0.025, stairMat, SG + SW/2, -stepH + STEP_RISE*0.5, stepZ);
+    }
+  }
+
+  // Stair side walls (stringers)
+  const STAIR_TOTAL_H = STEP_COUNT * STEP_RISE;
+  const slopeMat = new THREE.MeshStandardMaterial({color: 0xd0d4dc, roughness: 0.85});
+
+  // Left stringer (x = SG)
+  {
+    const g = new THREE.BufferGeometry();
+    const v = new Float32Array([
+      SG, 0, L1,
+      SG, 0, L1 + SD,
+      SG, -STAIR_TOTAL_H, L1 + SD,
+      SG, 0, L1,
+      SG, -STAIR_TOTAL_H, L1 + SD,
+      SG, -STAIR_TOTAL_H + 0.2, L1,
+    ]);
+    g.setAttribute('position', new THREE.BufferAttribute(v, 3));
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, slopeMat);
+    m.receiveShadow = true;
+    scene.add(m);
+  }
+  // Right stringer (x = SG + SW)
+  {
+    const xr = SG + SW;
+    const g = new THREE.BufferGeometry();
+    const v = new Float32Array([
+      xr, 0, L1,
+      xr, -STAIR_TOTAL_H + 0.2, L1,
+      xr, -STAIR_TOTAL_H, L1 + SD,
+      xr, 0, L1,
+      xr, -STAIR_TOTAL_H, L1 + SD,
+      xr, 0, L1 + SD,
+    ]);
+    g.setAttribute('position', new THREE.BufferAttribute(v, 3));
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, slopeMat);
+    m.receiveShadow = true;
+    scene.add(m);
+  }
+
+  // Handrail post at top of stairs
+  const railMat = new THREE.MeshStandardMaterial({color:0xd8d4cc, roughness:0.6, metalness:0.15});
+  box(0.04, 1.0, 0.04, railMat, SG - 0.04, 0.50, L1 + 0.04);
+  box(0.04, 1.0, 0.04, railMat, SG + SW + 0.04, 0.50, L1 + 0.04);
+  // Handrail bar
+  tube([SG - 0.04, 0.95, L1 + 0.04], [SG - 0.04, 0.95 - STAIR_TOTAL_H * 0.6, L1 + SD * 0.7], 0.018, railMat);
+  tube([SG + SW + 0.04, 0.95, L1 + 0.04], [SG + SW + 0.04, 0.95 - STAIR_TOTAL_H * 0.6, L1 + SD * 0.7], 0.018, railMat);
+}
+
+// ─── DIMENSION LABELS ────────────────────────────────────────────────────
+label('292 cm', CX, -0.22, CX * 0.5);
+label('347 cm', -0.30, -0.22, L1 / 2);
+label('225 cm', -0.30, -0.22, L1 + L2 / 2);
+label('293 cm (szczyt)', -0.28, H / 2, -0.1);
+
+// ─── GROUND PLANE (outside) ───────────────────────────────────────────────
+{
+  const gMat = new THREE.MeshStandardMaterial({color: 0x88a880, roughness: 1});
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), gMat);
+  g.rotation.x = -Math.PI / 2;
+  g.position.set(CX, -0.01, LT / 2);
+  g.receiveShadow = true;
+  scene.add(g);
+}
+
+// ─── CAMERA PRESETS ──────────────────────────────────────────────────────
+const VIEWS = {
+  overview: { pos: [5.5, 4.0, 9.0],   target: [1.46, 1.1, 2.8] },
+  duzy:     { pos: [1.46, 2.2, 5.5],  target: [1.46, 1.0, 1.5] },
+  schody:   { pos: [1.46, 2.0, 9.5],  target: [1.46, 0.5, 5.2] },
+  top:      { pos: [1.46, 7.5, 2.9],  target: [1.46, 0.0, 2.9] },
+};
+
+function flyTo(preset) {
+  const v = VIEWS[preset];
+  const startPos = camera.position.clone();
+  const startTarget = controls.target.clone();
+  const endPos = new THREE.Vector3(...v.pos);
+  const endTarget = new THREE.Vector3(...v.target);
+  let t = 0;
+  const dur = 80;
+  function step() {
+    t++;
+    const k = t / dur;
+    const ease = 1 - Math.pow(1 - k, 3);
+    camera.position.lerpVectors(startPos, endPos, ease);
+    controls.target.lerpVectors(startTarget, endTarget, ease);
+    controls.update();
+    if (t < dur) requestAnimationFrame(step);
+  }
+  step();
+}
+
+document.getElementById('btn-overview').onclick = () => flyTo('overview');
+document.getElementById('btn-duzy').onclick    = () => flyTo('duzy');
+document.getElementById('btn-schody').onclick  = () => flyTo('schody');
+document.getElementById('btn-top').onclick     = () => flyTo('top');
+
+// ─── RESIZE ──────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ─── ANIMATE ─────────────────────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>

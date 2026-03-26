@@ -54,6 +54,19 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.15s;
   }
   .vbtn:hover { background: #fff; }
+
+  #design-toggle {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 0; background: rgba(255,255,255,0.93);
+    border-radius: 10px; padding: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+  }
+  .dbtn {
+    padding: 8px 24px; border-radius: 7px; font-size: 13px; font-weight: 700;
+    cursor: pointer; border: none; background: transparent; color: #888;
+    transition: all 0.18s; letter-spacing: 0.2px;
+  }
+  .dbtn.active { background: #222; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
 </style>
 </head>
 <body>
@@ -72,21 +85,42 @@
   <div class="dim">Schody: <b>68 cm</b> szer.</div>
   <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
 
-  <div class="section">Wyposażenie (duży pokój)</div>
-  <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
-  <div class="dim">Poduszki dekoracyjne</div>
-  <div class="dim">Kufer na kołdry</div>
+  <div id="info-a">
+    <div class="section">Projekt A — Strefa Zen</div>
+    <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
+    <div class="dim">Poduszki lounge + wałki</div>
+    <div class="dim">Kufer na kołdry</div>
+  </div>
+  <div id="info-b" style="display:none">
+    <div class="section">Projekt B — Hamaki &amp; Relaks</div>
+    <div class="dim">2× hamak tkany (duży pokój)</div>
+    <div class="dim">Poduszki podłogowe</div>
+    <div class="dim">Fotel brazylijki (mały pokój)</div>
+    <div class="dim">Kufer na kołdry</div>
+  </div>
 </div>
 
 <div id="legend">
   <h3>Legenda</h3>
   <div><span class="dot" style="background:#f8f6f0;"></span> Ściany i sufit (białe)</div>
   <div><span class="dot" style="background:#b4b2ac;"></span> Podłoga (szara)</div>
-  <div><span class="dot" style="background:#f2efe0;"></span> Mata piankowa (cała podłoga)</div>
-  <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + wałki</div>
+  <div id="leg-a">
+    <div><span class="dot" style="background:#f2efe0;"></span> Mata piankowa</div>
+    <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + wałki</div>
+  </div>
+  <div id="leg-b" style="display:none">
+    <div><span class="dot" style="background:#c8a870;"></span> Hamaki tkane</div>
+    <div><span class="dot" style="background:#c8a878;"></span> Fotel brazylijki</div>
+    <div><span class="dot" style="background:#b8c4a8;"></span> Poduszki (B)</div>
+  </div>
   <div><span class="dot" style="background:#7a5a38;"></span> Kufer na kołdry</div>
   <div><span class="dot" style="background:#c8ccd4;"></span> Schody</div>
   <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
+</div>
+
+<div id="design-toggle">
+  <button class="dbtn active" id="btn-da">🛏 Projekt A</button>
+  <button class="dbtn" id="btn-db">🪢 Projekt B</button>
 </div>
 
 <div id="views">
@@ -240,6 +274,23 @@ function tube(p0, p1, r, mat) {
   m.castShadow = true; scene.add(m); return m;
 }
 
+// ─── DESIGN GROUPS ───────────────────────────────────────────────────────
+// Temporarily redirect scene.add into a group
+let _activeGroup = null;
+const _origAdd = scene.add.bind(scene);
+function inGroup(group, fn) {
+  _activeGroup = group;
+  const proxy = (...args) => { args.forEach(o => group.add(o)); };
+  scene.add = proxy;
+  fn();
+  scene.add = _origAdd;
+  _activeGroup = null;
+}
+
+const groupA = new THREE.Group(); scene.add(groupA);
+const groupB = new THREE.Group(); scene.add(groupB);
+groupB.visible = false;
+
 // Sprite label
 function label(text, x, y, z) {
   const c = document.createElement('canvas');
@@ -364,6 +415,8 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   tube([W - px, py, 0], [W - px, py, LT], 0.02, rafterMat);
 }
 
+// ─── PROJEKT A — STREFA ZEN ───────────────────────────────────────────────
+inGroup(groupA, () => {
 // ─── FOAM MAT — pokrywa całą podłogę dużego pokoju ───────────────────────
 {
   const FW = W;    // pełna szerokość podłogi 2.92 m
@@ -481,6 +534,7 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   // Hinge (top back)
   box(KW * 0.7, 0.03, 0.03, hwMat, kx, KH + 0.01, kz - KD/2 + 0.02);
 }
+}); // end inGroup(groupA)
 
 // ─── STAIRCASE ───────────────────────────────────────────────────────────
 {
@@ -552,6 +606,262 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   tube([SG + SW + 0.04, 0.95, L1 + 0.04], [SG + SW + 0.04, 0.95 - STAIR_TOTAL_H * 0.6, L1 + SD * 0.7], 0.018, railMat);
 }
 
+// ─── PROJEKT B — HAMAKI & FOTEL BRAZYLIJKI ────────────────────────────────
+inGroup(groupB, () => {
+
+  // ── KUFER (shared, same position) ──
+  {
+    const KW=1.20, KH=0.55, KD=0.58, kx=CX+0.70, kz=L1-0.55;
+    box(KW, KH, KD, chestMat, kx, KH/2, kz);
+    box(KW+0.03, 0.10, KD+0.03, lidMat, kx, KH+0.05, kz);
+    box(0.18, 0.03, 0.025, hwMat, kx, KH*0.45, kz+KD/2+0.01);
+    box(KW*0.7, 0.03, 0.03, hwMat, kx, KH+0.01, kz-KD/2+0.02);
+  }
+
+  // ── HAMMOCK helper ──
+  function createHammock(zCenter, zWidth, color) {
+    const leftX  = CX * (1.42 / H);   // ~0.708 m (on slanted wall)
+    const rightX = W - leftX;           // ~2.212 m
+    const mountH = 1.42;
+    const sagY   = 0.82;
+
+    // Catenary curve across the room width
+    const curvePts = [
+      new THREE.Vector3(leftX,  mountH,    zCenter),
+      new THREE.Vector3(leftX  + 0.30, 1.12, zCenter),
+      new THREE.Vector3(CX,    sagY,       zCenter),
+      new THREE.Vector3(rightX - 0.30, 1.12, zCenter),
+      new THREE.Vector3(rightX, mountH,    zCenter),
+    ];
+    const curve = new THREE.CatmullRomCurve3(curvePts);
+
+    // Woven fabric body mesh
+    const SEG_L = 28, SEG_W = 8;
+    const verts = [], idx = [];
+    for (let l = 0; l <= SEG_L; l++) {
+      const pt = curve.getPoint(l / SEG_L);
+      for (let w = 0; w <= SEG_W; w++) {
+        verts.push(pt.x, pt.y, zCenter + (w/SEG_W - 0.5)*zWidth);
+      }
+    }
+    for (let l = 0; l < SEG_L; l++) {
+      for (let w = 0; w < SEG_W; w++) {
+        const a = l*(SEG_W+1)+w, b=a+1, c=a+SEG_W+1, d=c+1;
+        idx.push(a,c,b, b,c,d);
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    const fabMat = new THREE.MeshStandardMaterial({color, roughness:0.90, side:THREE.DoubleSide});
+    const fab = new THREE.Mesh(g, fabMat);
+    fab.castShadow = true; fab.receiveShadow = true;
+    scene.add(fab);
+
+    // Edge ropes (along both long sides)
+    const ropeMat = new THREE.MeshStandardMaterial({color:0xc4b898, roughness:0.88});
+    const half = zWidth / 2;
+    [-half, half].forEach(zo => {
+      const ePts = [];
+      for (let l = 0; l <= SEG_L; l++) {
+        const pt = curve.getPoint(l/SEG_L);
+        ePts.push(new THREE.Vector3(pt.x, pt.y, zCenter + zo));
+      }
+      const ec = new THREE.CatmullRomCurve3(ePts);
+      const em = new THREE.Mesh(new THREE.TubeGeometry(ec, 28, 0.014, 6, false), ropeMat);
+      em.castShadow = true;
+      scene.add(em);
+    });
+
+    // Gathering ropes: bundle at each end (fan from all widths → anchor)
+    const gatherMat = new THREE.MeshStandardMaterial({color:0xb8ac90, roughness:0.85});
+    [[leftX, mountH], [rightX, mountH]].forEach(([ax, ay], side) => {
+      const t_end = side === 0 ? 0 : 1;
+      const endPt = curve.getPoint(t_end);
+      for (let w = 0; w <= SEG_W; w+=2) {
+        const zo = (w/SEG_W - 0.5)*zWidth;
+        const gc = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(endPt.x + (side===0?-0.08:0.08), endPt.y + 0.12, zCenter + zo),
+          new THREE.Vector3(ax, ay + 0.04, zCenter + zo * 0.4),
+          new THREE.Vector3(ax, ay, zCenter),
+        ]);
+        scene.add(new THREE.Mesh(new THREE.TubeGeometry(gc, 6, 0.007, 5, false), gatherMat));
+      }
+    });
+
+    // Wall anchor bolts
+    const boltMat = new THREE.MeshStandardMaterial({color:0x888878, metalness:0.82, roughness:0.25});
+    const anchH  = mountH + 0.22;
+    const anchXL = CX * (anchH / H);
+    const anchXR = W - anchXL;
+    const wallAngle = Math.atan2(H, CX);
+    [[anchXL, wallAngle], [anchXR, -wallAngle]].forEach(([bx, ba]) => {
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.022, 0.10, 8), boltMat);
+      bolt.position.set(bx, anchH, zCenter);
+      bolt.rotation.z = ba - Math.PI/2;
+      bolt.castShadow = true;
+      scene.add(bolt);
+      // small plate
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.02), boltMat);
+      plate.position.set(bx - Math.cos(ba)*0.03, anchH, zCenter);
+      plate.rotation.z = ba - Math.PI/2;
+      scene.add(plate);
+    });
+
+    // Spreader rope from wall → gather point (main hanging lines)
+    [[anchXL, anchXR]].forEach(() => {});
+    const mainRopeMat = new THREE.MeshStandardMaterial({color:0xd4c8a8, roughness:0.82});
+    const mainL = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(anchXL, anchH, zCenter),
+      new THREE.Vector3(leftX + 0.05, mountH + 0.06, zCenter),
+      new THREE.Vector3(leftX,  mountH, zCenter),
+    ]);
+    const mainR = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(anchXR, anchH, zCenter),
+      new THREE.Vector3(rightX - 0.05, mountH + 0.06, zCenter),
+      new THREE.Vector3(rightX, mountH, zCenter),
+    ]);
+    [mainL, mainR].forEach(mc => {
+      scene.add(new THREE.Mesh(new THREE.TubeGeometry(mc, 8, 0.015, 6, false), mainRopeMat));
+    });
+  }
+
+  // Two hammocks in the big room
+  createHammock(1.10, 0.88, 0xc8a060);  // warm ochre/straw
+  createHammock(2.55, 0.88, 0xa09060);  // darker earthy
+
+  // ── Floor cushions between hammocks (Design B) ──
+  const FT2 = 0.04; // on bare floor
+  const bCushions = [
+    { x:0.48, z:1.88, ry:0.20,  w:0.72, h:0.20, d:0.72, color:0xb4c4a0 },
+    { x:1.46, z:1.82, ry:-0.10, w:0.78, h:0.22, d:0.78, color:0xa0b490 },
+    { x:2.44, z:1.92, ry:0.14,  w:0.70, h:0.20, d:0.70, color:0xb8c8a8 },
+    { x:0.60, z:2.10, ry:-0.18, w:0.65, h:0.18, d:0.65, color:0x9cacaa },
+    { x:2.30, z:2.15, ry:0.22,  w:0.68, h:0.19, d:0.68, color:0xa8b8a4 },
+    // bolsters
+    { x:1.00, z:0.55, ry:Math.PI/2, w:0.20, h:0.20, d:0.58, color:0xd4c8a0, round:true },
+    { x:1.92, z:0.58, ry:Math.PI/2, w:0.20, h:0.20, d:0.56, color:0xc8bca0, round:true },
+    { x:1.46, z:3.10, ry:0.05,  w:0.72, h:0.55, d:0.26, color:0xa8b8a0, wall:true },
+    { x:0.55, z:3.12, ry:0.08,  w:0.64, h:0.50, d:0.26, color:0xb0bca8, wall:true },
+    { x:2.38, z:3.10, ry:-0.06, w:0.64, h:0.50, d:0.26, color:0xa4b4a0, wall:true },
+  ];
+  bCushions.forEach(c => {
+    const mat2 = new THREE.MeshStandardMaterial({color:c.color, roughness:0.90});
+    if (c.round) {
+      const geo2 = new THREE.CylinderGeometry(c.h/2, c.h/2, c.d, 16);
+      const m2 = new THREE.Mesh(geo2, mat2);
+      m2.position.set(c.x, FT2 + c.h/2, c.z);
+      m2.rotation.z = Math.PI/2; m2.rotation.y = c.ry;
+      m2.castShadow = true; scene.add(m2);
+    } else if (c.wall) {
+      box(c.w, c.h, c.d, mat2, c.x, FT2+c.h/2, c.z - c.d/2, c.ry);
+    } else {
+      const m2 = box(c.w, c.h, c.d, mat2, c.x, FT2+c.h/2, c.z, c.ry);
+      // Cross seam on top
+      const sm2 = new THREE.MeshStandardMaterial({color:c.color-0x181818, roughness:0.95});
+      box(c.w-0.04, 0.010, 0.016, sm2, c.x, FT2+c.h+0.005, c.z, c.ry);
+      box(0.016, 0.010, c.d-0.04, sm2, c.x, FT2+c.h+0.005, c.z, c.ry);
+    }
+  });
+
+  // ── FOTEL BRAZYLIJKI (hanging egg/pod chair in small room) ──
+  {
+    const cx2 = CX + 0.15;       // slightly off-center
+    const cz2 = L1 + 1.35;       // middle of stair room
+    const hookH2 = H - 0.28;     // hang from near ridge ~2.65m
+    const topH   = hookH2 - 0.28; // top of chair ~2.37m
+    const midH   = topH   - 0.42; // bowl center ~1.95m
+
+    // Hook on ridge beam
+    const hookMat2 = new THREE.MeshStandardMaterial({color:0x808070, metalness:0.88, roughness:0.20});
+    const hookGeo2 = new THREE.TorusGeometry(0.045, 0.013, 8, 20, Math.PI * 1.6);
+    const hookM = new THREE.Mesh(hookGeo2, hookMat2);
+    hookM.position.set(cx2, hookH2 + 0.02, cz2);
+    hookM.rotation.x = Math.PI / 2;
+    hookM.castShadow = true;
+    scene.add(hookM);
+
+    // Hanging chain (3-strand braid visual via 3 thin tubes)
+    const chainMat2 = new THREE.MeshStandardMaterial({color:0xa09888, metalness:0.45, roughness:0.60});
+    for (let s = 0; s < 3; s++) {
+      const ang = (s / 3) * Math.PI * 2;
+      const ox = Math.cos(ang) * 0.018, oz = Math.sin(ang) * 0.018;
+      const cc = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(cx2 + ox, hookH2, cz2 + oz),
+        new THREE.Vector3(cx2 + ox * 0.5, (hookH2 + topH)*0.5, cz2 + oz * 0.5),
+        new THREE.Vector3(cx2, topH, cz2),
+      ]);
+      scene.add(new THREE.Mesh(new THREE.TubeGeometry(cc, 8, 0.008, 5, false), chainMat2));
+    }
+
+    // Spreader ring
+    const ringMat2 = new THREE.MeshStandardMaterial({color:0x808070, metalness:0.78, roughness:0.25});
+    const ringM = new THREE.Mesh(new THREE.TorusGeometry(0.20, 0.016, 10, 28), ringMat2);
+    ringM.position.set(cx2, topH, cz2);
+    ringM.rotation.x = Math.PI/2;
+    ringM.castShadow = true;
+    scene.add(ringM);
+
+    // 4 support cords from ring to bowl rim
+    const cordMat = new THREE.MeshStandardMaterial({color:0xc8b890, roughness:0.87});
+    for (let i = 0; i < 4; i++) {
+      const a = (i/4)*Math.PI*2 + Math.PI/4;
+      const rx = cx2 + Math.cos(a)*0.19, rz = cz2 + Math.sin(a)*0.19;
+      const bx = cx2 + Math.cos(a)*0.40, bz = cz2 + Math.sin(a)*0.40;
+      const cc2 = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(rx, topH, rz),
+        new THREE.Vector3(bx, midH + 0.18, bz),
+      ]);
+      scene.add(new THREE.Mesh(new THREE.TubeGeometry(cc2, 5, 0.009, 5, false), cordMat));
+    }
+
+    // Bowl shell — flattened sphere open at top
+    const chairFabMat = new THREE.MeshStandardMaterial({
+      color: 0xc8a870, roughness:0.85, side:THREE.DoubleSide
+    });
+    const bowlGeo2 = new THREE.SphereGeometry(0.44, 22, 14, 0, Math.PI*2, 0.40, Math.PI*0.72);
+    const bowl2 = new THREE.Mesh(bowlGeo2, chairFabMat);
+    bowl2.position.set(cx2, midH, cz2);
+    bowl2.castShadow = true; bowl2.receiveShadow = true;
+    scene.add(bowl2);
+
+    // Inner seat pad
+    const seatMat = new THREE.MeshStandardMaterial({color:0xe0d0b0, roughness:0.96});
+    const seatGeo = new THREE.SphereGeometry(0.34, 16, 8, 0, Math.PI*2, 0.55, Math.PI*0.42);
+    const seat = new THREE.Mesh(seatGeo, seatMat);
+    seat.position.set(cx2, midH - 0.06, cz2);
+    seat.castShadow = true;
+    scene.add(seat);
+
+    // Back cushion in chair
+    const backMat = new THREE.MeshStandardMaterial({color:0xd4c4a0, roughness:0.93});
+    const backGeo = new THREE.SphereGeometry(0.26, 14, 8, 0, Math.PI*1.4, 0.38, Math.PI*0.38);
+    const back2 = new THREE.Mesh(backGeo, backMat);
+    back2.position.set(cx2, midH + 0.14, cz2 + 0.06);
+    back2.rotation.x = -0.3;
+    back2.castShadow = true;
+    scene.add(back2);
+
+    // Footrest cushion (small) below chair
+    box(0.28, 0.12, 0.28,
+      new THREE.MeshStandardMaterial({color:0xc8baa0, roughness:0.94}),
+      cx2 + 0.10, 0.06, cz2 + 0.42);
+
+    // Extra cushions around chair on floor
+    [
+      { x:cx2-0.70, z:cz2+0.30, ry:0.20,  w:0.62, h:0.18, d:0.62, color:0xb0c4a8 },
+      { x:cx2+0.55, z:cz2-0.25, ry:-0.25, w:0.58, h:0.17, d:0.58, color:0xa8bca0 },
+      { x:cx2-0.55, z:cz2-0.35, ry:0.15,  w:0.60, h:0.18, d:0.60, color:0xb8c8a8 },
+    ].forEach(c2 => {
+      const m3 = box(c2.w, c2.h, c2.d,
+        new THREE.MeshStandardMaterial({color:c2.color, roughness:0.90}),
+        c2.x, c2.h/2, c2.z, c2.ry);
+    });
+  }
+
+}); // end inGroup(groupB)
+
 // ─── DIMENSION LABELS ────────────────────────────────────────────────────
 label('292 cm', CX, -0.22, CX * 0.5);
 label('347 cm', -0.30, -0.22, L1 / 2);
@@ -595,6 +905,26 @@ function flyTo(preset) {
   }
   step();
 }
+
+// ─── DESIGN TOGGLE ───────────────────────────────────────────────────────
+document.getElementById('btn-da').onclick = () => {
+  groupA.visible = true;  groupB.visible = false;
+  document.getElementById('btn-da').classList.add('active');
+  document.getElementById('btn-db').classList.remove('active');
+  document.getElementById('info-a').style.display = '';
+  document.getElementById('info-b').style.display = 'none';
+  document.getElementById('leg-a').style.display = '';
+  document.getElementById('leg-b').style.display = 'none';
+};
+document.getElementById('btn-db').onclick = () => {
+  groupA.visible = false; groupB.visible = true;
+  document.getElementById('btn-db').classList.add('active');
+  document.getElementById('btn-da').classList.remove('active');
+  document.getElementById('info-a').style.display = 'none';
+  document.getElementById('info-b').style.display = '';
+  document.getElementById('leg-a').style.display = 'none';
+  document.getElementById('leg-b').style.display = '';
+};
 
 document.getElementById('btn-overview').onclick = () => flyTo('overview');
 document.getElementById('btn-duzy').onclick    = () => flyTo('duzy');

@@ -1504,7 +1504,7 @@ async function fetchData(force = false) {
   if (_cache && !force) return _cache;
   try {
     const r = await fetch(API_URL + '?_=' + Date.now(), {
-      headers: { Accept: 'application/vnd.github+json' }
+      headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${_GH}` }
     });
     const d = await r.json();
     const content = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g, '')))));
@@ -1653,9 +1653,11 @@ async function submitComment(initials, item, text, emoji) {
       headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
       body: JSON.stringify({ message: `Komentarz: ${newComment.initials}${emoji ? ' '+emoji : ''}${text ? ' — '+text.slice(0,50) : ''}`, content: encoded, sha: current.sha })
     });
-    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `HTTP ${res.status}`); }
-    _cache = null;
-    await loadAndRender();
+    const resData = await res.json();
+    if (!res.ok) throw new Error(resData.message || `HTTP ${res.status}`);
+    _cache = { sha: resData.content.sha, comments: updated.comments, polls: updated.polls };
+    const _ini = document.getElementById('p-initials').value || document.getElementById('c-initials').value;
+    renderPolls(_cache.polls, _ini); renderComments(_cache.comments, _cmtFilter); updateItemBadges(_cache.comments);
     statusEl.className = 'comment-status ok';
     statusEl.textContent = '✅ Komentarz dodany!';
     document.getElementById('c-text').value = '';
@@ -1699,9 +1701,10 @@ async function createPoll() {
       headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
       body: JSON.stringify({ message: `Głosowanie: ${question.slice(0,50)}`, content: encoded, sha: current.sha })
     });
-    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `HTTP ${res.status}`); }
-    _cache = null;
-    await loadAndRender();
+    const resData2 = await res.json();
+    if (!res.ok) throw new Error(resData2.message || `HTTP ${res.status}`);
+    _cache = { sha: resData2.content.sha, comments: updated.comments, polls: updated.polls };
+    renderPolls(_cache.polls, initials); renderComments(_cache.comments, _cmtFilter); updateItemBadges(_cache.comments);
     statusEl.className = 'comment-status ok';
     statusEl.textContent = '✅ Głosowanie utworzone!';
     document.getElementById('p-question').value = '';
@@ -1726,9 +1729,10 @@ async function votePoll(pollId, optIdx, initials) {
       headers: { Authorization: `Bearer ${_GH}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
       body: JSON.stringify({ message: `Głos: ${initials}`, content: encoded, sha: current.sha })
     });
+    const resData3 = await res.json();
     if (!res.ok) return;
-    _cache = null;
-    await loadAndRender();
+    _cache = { sha: resData3.content.sha, comments: updated.comments, polls: updated.polls };
+    renderPolls(_cache.polls, initials); renderComments(_cache.comments, _cmtFilter); updateItemBadges(_cache.comments);
   } catch {}
 }
 

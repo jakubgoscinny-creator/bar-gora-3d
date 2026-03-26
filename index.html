@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Bar Góra — Model 3D</title>
+<title>Bar GÃ³ra â Model 3D</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { overflow: hidden; background: #dce8f4; font-family: 'Segoe UI', sans-serif; }
@@ -68,7 +68,7 @@
   }
   .dbtn.active { background: #222; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
 
-  /* ── SHOPPING BUTTON ── */
+  /* ââ SHOPPING BUTTON ââ */
   #btn-shop {
     position: absolute; bottom: 56px; left: 16px;
     background: #222; color: #fff; border: none;
@@ -78,7 +78,7 @@
   }
   #btn-shop:hover { background: #444; }
 
-  /* ── SHOPPING PANEL ── */
+  /* ââ SHOPPING PANEL ââ */
   #shop-panel {
     display: none; position: absolute; top: 0; right: 0; bottom: 0;
     width: 400px; background: rgba(255,255,255,0.97);
@@ -144,7 +144,7 @@
     margin-top: 12px; border-radius: 0 6px 6px 0;
   }
 
-  /* ── COMMENTS ── */
+  /* ââ COMMENTS ââ */
   .comment-tag {
     display: inline-block; font-size: 10px; font-weight: 700;
     padding: 1px 7px; border-radius: 10px; margin-right: 5px;
@@ -218,285 +218,285 @@
 <body>
 
 <div id="info">
-  <h2>Bar Góra — Model 3D</h2>
+  <h2>Bar GÃ³ra â Model 3D</h2>
 
-  <div class="section">Duży pokój (A-frame)</div>
-  <div class="dim">Szerokość podłogi: <b>292 cm</b></div>
-  <div class="dim">Długość: <b>347 cm</b></div>
-  <div class="dim">Wysokość szczytu: <b>293 cm</b></div>
-  <div class="dim">Kąt nachylenia ścian: <b>60°</b></div>
+  <div class="section">DuÅ¼y pokÃ³j (A-frame)</div>
+  <div class="dim">SzerokoÅÄ podÅogi: <b>292 cm</b></div>
+  <div class="dim">DÅugoÅÄ: <b>347 cm</b></div>
+  <div class="dim">WysokoÅÄ szczytu: <b>293 cm</b></div>
+  <div class="dim">KÄt nachylenia Åcian: <b>60Â°</b></div>
 
-  <div class="section">Mały pokój (schody)</div>
-  <div class="dim">Głębokość: <b>225 cm</b></div>
+  <div class="section">MaÅy pokÃ³j (schody)</div>
+  <div class="dim">GÅÄbokoÅÄ: <b>225 cm</b></div>
   <div class="dim">Schody: <b>68 cm</b> szer.</div>
-  <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
+  <div class="dim">OdstÄp schodyâÅciana: <b>50 cm</b></div>
 
   <div id="info-a">
-    <div class="section">Projekt A — Strefa Zen</div>
-    <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
-    <div class="dim">Poduszki lounge + wałki</div>
-    <div class="dim">Kufer na kołdry</div>
+    <div class="section">Projekt A â Strefa Zen</div>
+    <div class="dim">Mata piankowa: <b>292 Ã 347 cm Ã 22 cm</b></div>
+    <div class="dim">Poduszki lounge + waÅki</div>
+    <div class="dim">Kufer na koÅdry</div>
   </div>
   <div id="info-b" style="display:none">
-    <div class="section">Projekt B — Hamaki &amp; Relaks</div>
-    <div class="dim">2× hamak tkany (duży pokój)</div>
-    <div class="dim">Poduszki podłogowe</div>
-    <div class="dim">Fotel brazylijki (mały pokój)</div>
-    <div class="dim">Kufer na kołdry</div>
+    <div class="section">Projekt B â Hamaki &amp; Relaks</div>
+    <div class="dim">2Ã hamak tkany (duÅ¼y pokÃ³j)</div>
+    <div class="dim">Poduszki podÅogowe</div>
+    <div class="dim">Fotel brazylijki (maÅy pokÃ³j)</div>
+    <div class="dim">Kufer na koÅdry</div>
   </div>
 </div>
 
 <div id="legend">
   <h3>Legenda</h3>
-  <div><span class="dot" style="background:#f8f6f0;"></span> Ściany i sufit (białe)</div>
-  <div><span class="dot" style="background:#b4b2ac;"></span> Podłoga (szara)</div>
+  <div><span class="dot" style="background:#f8f6f0;"></span> Åciany i sufit (biaÅe)</div>
+  <div><span class="dot" style="background:#b4b2ac;"></span> PodÅoga (szara)</div>
   <div id="leg-a">
     <div><span class="dot" style="background:#f2efe0;"></span> Mata piankowa</div>
-    <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + wałki</div>
+    <div><span class="dot" style="background:#c9b99a;"></span> Poduszki lounge + waÅki</div>
   </div>
   <div id="leg-b" style="display:none">
     <div><span class="dot" style="background:#c8a870;"></span> Hamaki tkane</div>
     <div><span class="dot" style="background:#c8a878;"></span> Fotel brazylijki</div>
     <div><span class="dot" style="background:#b8c4a8;"></span> Poduszki (B)</div>
   </div>
-  <div><span class="dot" style="background:#7a5a38;"></span> Kufer na kołdry</div>
+  <div><span class="dot" style="background:#7a5a38;"></span> Kufer na koÅdry</div>
   <div><span class="dot" style="background:#c8ccd4;"></span> Schody</div>
   <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
 </div>
 
 <div id="design-toggle">
-  <button class="dbtn active" id="btn-da">🛏 Projekt A</button>
-  <button class="dbtn" id="btn-db">🪢 Projekt B</button>
+  <button class="dbtn active" id="btn-da">ð Projekt A</button>
+  <button class="dbtn" id="btn-db">ðª¢ Projekt B</button>
 </div>
 
 <div id="views">
-  <button class="vbtn" id="btn-overview">Widok ogólny</button>
-  <button class="vbtn" id="btn-duzy">Duży pokój</button>
+  <button class="vbtn" id="btn-overview">Widok ogÃ³lny</button>
+  <button class="vbtn" id="btn-duzy">DuÅ¼y pokÃ³j</button>
   <button class="vbtn" id="btn-schody">Schody</button>
-  <button class="vbtn" id="btn-top">Z góry</button>
+  <button class="vbtn" id="btn-top">Z gÃ³ry</button>
 </div>
 
-<button id="btn-shop">🛒 Lista zakupowa</button>
+<button id="btn-shop">ð Lista zakupowa</button>
 
 <div id="shop-panel">
   <div class="sp-head">
     <h2>Lista zakupowa</h2>
-    <button id="btn-shop-close">✕</button>
+    <button id="btn-shop-close">â</button>
   </div>
   <div class="sp-tabs">
-    <button class="sp-tab active" data-tab="a">🛏 Projekt A</button>
-    <button class="sp-tab" data-tab="b">🪢 Projekt B</button>
-    <button class="sp-tab" data-tab="wspolne">Wspólne</button>
-    <button class="sp-tab" data-tab="komentarze">💬 Komentarze<span id="comment-count" style="display:none">0</span></button>
+    <button class="sp-tab active" data-tab="a">ð Projekt A</button>
+    <button class="sp-tab" data-tab="b">ðª¢ Projekt B</button>
+    <button class="sp-tab" data-tab="wspolne">WspÃ³lne</button>
+    <button class="sp-tab" data-tab="komentarze">ð¬ Komentarze<span id="comment-count" style="display:none">0</span></button>
   </div>
 
   <!-- PROJEKT A -->
   <div class="sp-body" id="sp-a">
-    <div class="sp-section">Projekt A — Strefa Zen</div>
+    <div class="sp-section">Projekt A â Strefa Zen</div>
 
     <div class="sp-item">
-      <div class="sp-name">Mata piankowa T35 na wymiar<small>292×347×20 cm — zamów u producenta z wymiarami</small>
+      <div class="sp-name">Mata piankowa T35 na wymiar<small>292Ã347Ã20 cm â zamÃ³w u producenta z wymiarami</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=pianka+poliuretanowa+na+wymiar+20cm" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=topper+piankowy+200x200+20cm" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~450 zł</div>
+      <div class="sp-price">~450 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Pokrowiec na matę<small>2× prześcieradło elastyczne 200×200 cm</small>
+      <div class="sp-name">Pokrowiec na matÄ<small>2Ã przeÅcieradÅo elastyczne 200Ã200 cm</small>
         <div class="sp-links">
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=prze%C5%9Bcieradlo+elastyczne+200x200" target="_blank">Amazon</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=prze%C5%9Bcieradlo+elastyczne+200x200+jersey" target="_blank">Allegro</a>
         </div>
       </div>
-      <div class="sp-price">~140 zł</div>
+      <div class="sp-price">~140 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">6× poduszka lounge 70×70 cm<small>bawełna, beż/taupe — szukaj zestawów 3-pak</small>
+      <div class="sp-name">6Ã poduszka lounge 70Ã70 cm<small>baweÅna, beÅ¼/taupe â szukaj zestawÃ³w 3-pak</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+du%C5%BCa+70x70+bawelna" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+70x70+naturalna" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~480 zł</div>
+      <div class="sp-price">~480 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">3× poduszka oparciowa 80×65 cm<small>przy tylnej ścianie, styl zazen</small>
+      <div class="sp-name">3Ã poduszka oparciowa 80Ã65 cm<small>przy tylnej Åcianie, styl zazen</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+oparciowa+du%C5%BCa+80cm+pod%C5%82oga" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+oparciowa+pod%C5%82oga+80cm" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~270 zł</div>
+      <div class="sp-price">~270 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">2× wałek dekoracyjny bolster 60 cm<small>okrągły, bawełniany</small>
+      <div class="sp-name">2Ã waÅek dekoracyjny bolster 60 cm<small>okrÄgÅy, baweÅniany</small>
         <div class="sp-links">
           <a class="sp-link alle" href="https://allegro.pl/listing?string=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga+60cm" target="_blank">Allegro</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=wa%C5%82ek+dekoracyjny+bolster+pod%C5%82oga" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~110 zł</div>
+      <div class="sp-price">~110 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
+      <div class="sp-name">Kufer drewniany na koÅdry ~120 cm<small>sosnowy, z pokrywÄ â wspÃ³lny dla obu projektÃ³w</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro â</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=skrzynia+keter" target="_blank">Castorama</a>
         </div>
       </div>
-      <div class="sp-price">~350 zł</div>
+      <div class="sp-price">~350 zÅ</div>
     </div>
 
     <div class="sp-total">
-      <span>💰 Suma Projekt A</span>
-      <span>~1 800 zł</span>
+      <span>ð° Suma Projekt A</span>
+      <span>~1 800 zÅ</span>
     </div>
-    <div class="sp-note">★ Mata piankowa: podaj wymiary 292×347 cm przy zamówieniu, gęstość T35 (35 kg/m³)</div>
+    <div class="sp-note">â Mata piankowa: podaj wymiary 292Ã347 cm przy zamÃ³wieniu, gÄstoÅÄ T35 (35 kg/mÂ³)</div>
   </div>
 
   <!-- PROJEKT B -->
   <div class="sp-body" id="sp-b" style="display:none">
-    <div class="sp-section">Projekt B — Hamaki &amp; Fotel Brazylijki</div>
+    <div class="sp-section">Projekt B â Hamaki &amp; Fotel Brazylijki</div>
 
     <div class="sp-item">
-      <div class="sp-name">2× hamak brazylijski tkany bawełniany<small>bez drążków, ~200×90 cm — "hamak siodełkowy tkany"</small>
+      <div class="sp-name">2Ã hamak brazylijski tkany baweÅniany<small>bez drÄÅ¼kÃ³w, ~200Ã90 cm â "hamak siodeÅkowy tkany"</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=hamak+brazylijski+tkany+bawelniany+bez+dr%C4%85%C5%BCk%C3%B3w" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=hamak+brazylijski+tkany+bawelniany+bez+dr%C4%85%C5%BCk%C3%B3w" target="_blank">Allegro â</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=hamak+ogrodowy+bawelniany" target="_blank">Castorama</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=hamak+brazylijski+tkany+bez+dra%C5%BCk%C3%B3w" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~260 zł</div>
+      <div class="sp-price">~260 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">4× śruba oczkowa M10 + karabińczyki<small>kotwice do krokwi — wkręć w krokwie, min. 60 mm głębokości</small>
+      <div class="sp-name">4Ã Åruba oczkowa M10 + karabiÅczyki<small>kotwice do krokwi â wkrÄÄ w krokwie, min. 60 mm gÅÄbokoÅci</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/search?q=%C5%9Bruba+oczkowa+m10+ocynkowana" target="_blank">Castorama ★</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=%C5%9Bruba+oczkowa+m10+ocynkowana" target="_blank">Castorama â</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=uchwyt+do+hamaka+zestaw+stalowy+150kg" target="_blank">Allegro</a>
         </div>
       </div>
-      <div class="sp-price">~100 zł</div>
+      <div class="sp-price">~100 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Fotel brazylijki wiszący tkany<small>bawełna, bez stojaka — montaż na hak w krokwi kalenicy</small>
+      <div class="sp-name">Fotel brazylijki wiszÄcy tkany<small>baweÅna, bez stojaka â montaÅ¼ na hak w krokwi kalenicy</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=fotel+brazylijki+wiszacy+tkanina+bawelna" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=fotel+brazylijki+wiszacy+tkanina+bawelna" target="_blank">Allegro â</a>
           <a class="sp-link cast" href="https://www.castorama.pl/search?q=fotel+wiszacy+ogrodowy" target="_blank">Castorama</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=fotel+wiszacy+hamakowy+tkany+brazylijski" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~320 zł</div>
+      <div class="sp-price">~320 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Hak sufitowy M10 + obrotnica 360°<small>nośność min. 150 kg — do kalenicy małego pokoju</small>
+      <div class="sp-name">Hak sufitowy M10 + obrotnica 360Â°<small>noÅnoÅÄ min. 150 kg â do kalenicy maÅego pokoju</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hak+sufitowy+obrotnica+360" target="_blank">Castorama ★</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/search?q=hak+sufitowy+obrotnica+360" target="_blank">Castorama â</a>
           <a class="sp-link alle" href="https://allegro.pl/listing?string=obrotnica+360+fotel+wiszacy+M10+150kg" target="_blank">Allegro</a>
         </div>
       </div>
-      <div class="sp-price">~60 zł</div>
+      <div class="sp-price">~60 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">10× poduszka podłogowa 65×65 cm<small>oliwkowa/zielona boho — szukaj zestawów 3-pak</small>
+      <div class="sp-name">10Ã poduszka podÅogowa 65Ã65 cm<small>oliwkowa/zielona boho â szukaj zestawÃ³w 3-pak</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+65x65+oliwkowa+boho" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszka+pod%C5%82ogowa+65x65+oliwkowa+boho" target="_blank">Allegro â</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+pod%C5%82ogowa+lounge+65cm+bawelna" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~700 zł</div>
+      <div class="sp-price">~700 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Zestaw poduszek do fotela<small>siedzenie + oparcie do fotela wiszącego</small>
+      <div class="sp-name">Zestaw poduszek do fotela<small>siedzenie + oparcie do fotela wiszÄcego</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszki+do+fotela+wiszacego+brazylijki+zestaw" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=poduszki+do+fotela+wiszacego+brazylijki+zestaw" target="_blank">Allegro â</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=poduszka+fotel+wiszacy+hamakowy+wymiana" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~110 zł</div>
+      <div class="sp-price">~110 zÅ</div>
     </div>
 
     <div class="sp-item">
-      <div class="sp-name">Kufer drewniany na kołdry ~120 cm<small>sosnowy, z pokrywą — wspólny dla obu projektów</small>
+      <div class="sp-name">Kufer drewniany na koÅdry ~120 cm<small>sosnowy, z pokrywÄ â wspÃ³lny dla obu projektÃ³w</small>
         <div class="sp-links">
-          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro ★</a>
+          <a class="sp-link alle" href="https://allegro.pl/listing?string=kufer+drewniany+na+ko%C5%82dry+120cm" target="_blank">Allegro â</a>
           <a class="sp-link amaz" href="https://www.amazon.pl/s?k=kufer+drewniany+skrzynia+na+koldr%C4%99" target="_blank">Amazon</a>
         </div>
       </div>
-      <div class="sp-price">~350 zł</div>
+      <div class="sp-price">~350 zÅ</div>
     </div>
 
     <div class="sp-total">
-      <span>💰 Suma Projekt B</span>
-      <span>~1 900 zł</span>
+      <span>ð° Suma Projekt B</span>
+      <span>~1 900 zÅ</span>
     </div>
-    <div class="sp-note">⚠️ Kotwy hamaków i hak fotela muszą być wkręcone w krokwie drewniane (co ~63 cm), nie w deskowanie!</div>
+    <div class="sp-note">â ï¸ Kotwy hamakÃ³w i hak fotela muszÄ byÄ wkrÄcone w krokwie drewniane (co ~63 cm), nie w deskowanie!</div>
   </div>
 
-  <!-- WSPÓLNE -->
+  <!-- WSPÃLNE -->
   <div class="sp-body" id="sp-wspolne" style="display:none">
-    <div class="sp-section">Porównanie projektów</div>
-    <div class="sp-item"><div class="sp-name">Projekt A — Strefa Zen</div><div class="sp-price">~1 800 zł</div></div>
-    <div class="sp-item"><div class="sp-name">Projekt B — Hamaki &amp; Relaks</div><div class="sp-price">~1 900 zł</div></div>
-    <div class="sp-section">Różnica</div>
-    <div class="sp-item"><div class="sp-name">Projekty zbliżone cenowo</div><div class="sp-price">~100 zł</div></div>
-    <div class="sp-section">Sklep główny</div>
+    <div class="sp-section">PorÃ³wnanie projektÃ³w</div>
+    <div class="sp-item"><div class="sp-name">Projekt A â Strefa Zen</div><div class="sp-price">~1 800 zÅ</div></div>
+    <div class="sp-item"><div class="sp-name">Projekt B â Hamaki &amp; Relaks</div><div class="sp-price">~1 900 zÅ</div></div>
+    <div class="sp-section">RÃ³Å¼nica</div>
+    <div class="sp-item"><div class="sp-name">Projekty zbliÅ¼one cenowo</div><div class="sp-price">~100 zÅ</div></div>
+    <div class="sp-section">Sklep gÅÃ³wny</div>
     <div class="sp-item">
-      <div class="sp-name">Castorama Bydgoszcz Szubińska<small>śruby oczkowe, karabińczyki, haki — elementy montażowe</small>
+      <div class="sp-name">Castorama Bydgoszcz SzubiÅska<small>Åruby oczkowe, karabiÅczyki, haki â elementy montaÅ¼owe</small>
         <div class="sp-links">
-          <a class="sp-link cast" href="https://www.castorama.pl/sklepy/bydgoszcz-szubinska.html" target="_blank">Castorama ↗</a>
+          <a class="sp-link cast" href="https://www.castorama.pl/sklepy/bydgoszcz-szubinska.html" target="_blank">Castorama â</a>
         </div>
       </div>
     </div>
-    <div class="sp-note">★ = rekomendowana opcja dla danej pozycji<br>Większość zakupów (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama przydatna dla elementów montażowych (śruby M10, karabińczyki, haki).</div>
+    <div class="sp-note">â = rekomendowana opcja dla danej pozycji<br>WiÄkszoÅÄ zakupÃ³w (poduszki, hamaki, kufer) najlepsza na Allegro lub Amazon. Castorama przydatna dla elementÃ³w montaÅ¼owych (Åruby M10, karabiÅczyki, haki).</div>
   </div>
 
   <!-- KOMENTARZE -->
   <div class="sp-body" id="sp-komentarze" style="display:none">
-    <div class="sp-section">Komentarze odwiedzających</div>
+    <div class="sp-section">Komentarze odwiedzajÄcych</div>
     <div id="comments-list">
-      <div style="color:#aaa; font-size:12px; padding:8px 0;">Ładowanie komentarzy…</div>
+      <div style="color:#aaa; font-size:12px; padding:8px 0;">Åadowanie komentarzyâ¦</div>
     </div>
 
     <div class="comment-form">
       <label>Dodaj komentarz</label>
       <div class="comment-input-row">
         <input type="text" class="initials-input" id="c-initials" maxlength="3" placeholder="JK" autocomplete="off">
-        <input type="text" id="c-item" placeholder="Dotyczy (np. hamak, mata…)" style="flex:1;padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;">
+        <input type="text" id="c-item" placeholder="Dotyczy (np. hamak, mataâ¦)" style="flex:1;padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;">
       </div>
-      <textarea class="comment-text-input" id="c-text" rows="3" placeholder="Twój komentarz, znalezisko cenowe, uwaga…"></textarea>
+      <textarea class="comment-text-input" id="c-text" rows="3" placeholder="TwÃ³j komentarz, znalezisko cenowe, uwagaâ¦"></textarea>
       <div style="margin-bottom:8px;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#888;margin-bottom:6px;">Nastrój</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#888;margin-bottom:6px;">NastrÃ³j</div>
         <div id="emoji-picker" style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="ep" data-e="👍" title="Super">👍</button>
-          <button class="ep" data-e="❤️" title="Lubię to">❤️</button>
-          <button class="ep" data-e="🔥" title="Gorące">🔥</button>
-          <button class="ep" data-e="⭐" title="Polecam">⭐</button>
-          <button class="ep" data-e="💡" title="Dobry pomysł">💡</button>
-          <button class="ep" data-e="✅" title="Sprawdzone">✅</button>
-          <button class="ep" data-e="😊" title="Miłe">😊</button>
-          <button class="ep" data-e="💰" title="Okazja cenowa">💰</button>
+          <button class="ep" data-e="ð" title="Super">ð</button>
+          <button class="ep" data-e="â¤ï¸" title="LubiÄ to">â¤ï¸</button>
+          <button class="ep" data-e="ð¥" title="GorÄce">ð¥</button>
+          <button class="ep" data-e="â­" title="Polecam">â­</button>
+          <button class="ep" data-e="ð¡" title="Dobry pomysÅ">ð¡</button>
+          <button class="ep" data-e="â" title="Sprawdzone">â</button>
+          <button class="ep" data-e="ð" title="MiÅe">ð</button>
+          <button class="ep" data-e="ð°" title="Okazja cenowa">ð°</button>
         </div>
       </div>
-      <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz →</button>
+      <button class="btn-submit-comment" id="btn-add-comment">Dodaj komentarz â</button>
       <div class="comment-status" id="comment-status"></div>
     </div>
   </div>
 </div>
 
-<div id="controls">LPM + przeciąganie = obrót &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesunięcie</div>
+<div id="controls">LPM + przeciÄganie = obrÃ³t &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM = przesuniÄcie</div>
 
 <script type="importmap">
 {
@@ -511,7 +511,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// ─── SCENE SETUP ─────────────────────────────────────────────────────────
+// âââ SCENE SETUP âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xd4e4f0);
 scene.fog = new THREE.Fog(0xd4e4f0, 18, 40);
@@ -535,7 +535,7 @@ controls.target.set(1.46, 1.1, 2.8);
 controls.minDistance = 0.5;
 controls.maxDistance = 20;
 
-// ─── LIGHTING ────────────────────────────────────────────────────────────
+// âââ LIGHTING ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const ambLight = new THREE.AmbientLight(0xffffff, 0.60);
 scene.add(ambLight);
 
@@ -556,10 +556,10 @@ const winLight = new THREE.PointLight(0xfff5e0, 0.8, 6, 1.5);
 winLight.position.set(1.46, 1.8, 0.3);
 scene.add(winLight);
 
-// ─── DIMENSIONS ──────────────────────────────────────────────────────────
+// âââ DIMENSIONS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const W  = 2.92;   // floor width (both rooms)
-const L1 = 3.47;   // big room length   (z: 0 → L1)
-const L2 = 2.25;   // stair room length (z: L1 → L1+L2)
+const L1 = 3.47;   // big room length   (z: 0 â L1)
+const L2 = 2.25;   // stair room length (z: L1 â L1+L2)
 const LT = L1 + L2; // total 5.72 m
 const H  = 2.93;   // ridge height
 const CX = W / 2;  // ridge center x = 1.46
@@ -569,13 +569,13 @@ const DH = 1.90;          // doorway height
 const DX = CX - DW / 2;  // doorway left edge (centered)
 
 const SW  = 0.68; // stair tread width (x-dir)
-const SG  = 0.50; // gap stairs→left wall
+const SG  = 0.50; // gap stairsâleft wall
 const SD  = 1.40; // stair run depth (z-dir of the opening)
 const STEP_COUNT = 12;
 const STEP_RISE  = 0.22;
 const STEP_RUN   = SD / STEP_COUNT;
 
-// ─── MATERIALS ───────────────────────────────────────────────────────────
+// âââ MATERIALS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const wallMat  = new THREE.MeshStandardMaterial({ color: 0xf8f6f0, roughness: 0.88, side: THREE.DoubleSide });
 const floorMat = new THREE.MeshStandardMaterial({ color: 0xb4b2ac, roughness: 0.92, metalness: 0.02 });
 const foamMat  = new THREE.MeshStandardMaterial({ color: 0xecead6, roughness: 0.96 });
@@ -591,7 +591,7 @@ const darkMat  = new THREE.MeshStandardMaterial({ color: 0x111114, roughness: 1 
 
 const cushColors = [0xe2c4a0, 0xd4b090, 0xc89888, 0xbca080, 0xd8c0a8, 0xe6d4b8];
 
-// ─── GEOMETRY HELPERS ────────────────────────────────────────────────────
+// âââ GEOMETRY HELPERS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 // Add a simple box
 function box(w, h, d, mat, x, y, z, ry = 0) {
@@ -640,7 +640,7 @@ function tube(p0, p1, r, mat) {
   m.castShadow = true; scene.add(m); return m;
 }
 
-// ─── DESIGN GROUPS ───────────────────────────────────────────────────────
+// âââ DESIGN GROUPS âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // Temporarily redirect scene.add into a group
 let _activeGroup = null;
 const _origAdd = scene.add.bind(scene);
@@ -675,19 +675,19 @@ function label(text, x, y, z) {
   scene.add(sp);
 }
 
-// ─── A-FRAME STRUCTURE ───────────────────────────────────────────────────
+// âââ A-FRAME STRUCTURE âââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 // Full combined floor
 floorPlane(W, LT, floorMat, CX, LT / 2);
 
-// Left slanted wall/roof — full building length
+// Left slanted wall/roof â full building length
 // p0=(0,0,0), p1=(0,0,LT), p2=(CX,H,LT), p3=(CX,H,0)
 slopedFace([0,0,0], [0,0,LT], [CX,H,LT], [CX,H,0], wallMat);
 
-// Right slanted wall/roof — full building length
+// Right slanted wall/roof â full building length
 slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
 
-// ─── FRONT END WALL (z=0) — triangle with trapezoid window ───────────────
+// âââ FRONT END WALL (z=0) â triangle with trapezoid window âââââââââââââââ
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
@@ -718,14 +718,14 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   box(1.10, 0.06, 0.06, new THREE.MeshStandardMaterial({color:0xf0ece2, roughness:0.5}), CX, 0.87, 0.03);
 }
 
-// ─── BACK END WALL (z=LT) — solid triangle ───────────────────────────────
+// âââ BACK END WALL (z=LT) â solid triangle âââââââââââââââââââââââââââââââ
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
   shapeWall(s, LT, wallMat);
 }
 
-// ─── INTERIOR PARTITION WALL (z=L1) — triangle with centered doorway ─────
+// âââ INTERIOR PARTITION WALL (z=L1) â triangle with centered doorway âââââ
 {
   const s = new THREE.Shape();
   s.moveTo(0, 0); s.lineTo(W, 0); s.lineTo(CX, H); s.closePath();
@@ -747,13 +747,13 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   box(0.06, DH, 0.08, fMat, DX + DW + 0.03, DH/2, L1);  // right
 }
 
-// ─── RIDGE BEAM (kalenica) ────────────────────────────────────────────────
+// âââ RIDGE BEAM (kalenica) ââââââââââââââââââââââââââââââââââââââââââââââââ
 {
   const ridgeMat = new THREE.MeshStandardMaterial({color:0xf0ece0, roughness:0.7});
   tube([CX, H + 0.02, 0], [CX, H + 0.02, LT], 0.045, ridgeMat);
 }
 
-// ─── RAFTERS (krokwie) ───────────────────────────────────────────────────
+// âââ RAFTERS (krokwie) âââââââââââââââââââââââââââââââââââââââââââââââââââ
 {
   const rafterMat = new THREE.MeshStandardMaterial({color:0xf4f0e8, roughness:0.8});
   const RAFTER_N = 9; // 8 bays
@@ -762,7 +762,7 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
     tube([0, 0, z], [CX, H, z], 0.025, rafterMat);
     tube([W, 0, z], [CX, H, z], 0.025, rafterMat);
   }
-  // Collar ties (poziome belki spinające)
+  // Collar ties (poziome belki spinajÄce)
   const TIE_H = 1.5;
   for (let i = 1; i <= RAFTER_N - 1; i++) {
     if (i % 2 === 0) {
@@ -773,7 +773,7 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
       tube([tieX0, TIE_H, z], [tieX1, TIE_H, z], 0.02, rafterMat);
     }
   }
-  // Purlin (płatew boczna) — horizontal beam along each slope
+  // Purlin (pÅatew boczna) â horizontal beam along each slope
   const PURLIN_T = 0.5; // fraction along rafter
   const px = CX * PURLIN_T;
   const py = H * PURLIN_T;
@@ -781,52 +781,52 @@ slopedFace([W,0,0], [CX,H,0], [CX,H,LT], [W,0,LT], wallMat);
   tube([W - px, py, 0], [W - px, py, LT], 0.02, rafterMat);
 }
 
-// ─── PROJEKT A — STREFA ZEN ───────────────────────────────────────────────
+// âââ PROJEKT A â STREFA ZEN âââââââââââââââââââââââââââââââââââââââââââââââ
 inGroup(groupA, () => {
-// ─── FOAM MAT — pokrywa całą podłogę dużego pokoju ───────────────────────
+// âââ FOAM MAT â pokrywa caÅÄ podÅogÄ duÅ¼ego pokoju âââââââââââââââââââââââ
 {
-  const FW = W;    // pełna szerokość podłogi 2.92 m
-  const FL = L1;   // pełna długość pokoju 3.47 m
-  const FH = 0.22; // grubość 22 cm
+  const FW = W;    // peÅna szerokoÅÄ podÅogi 2.92 m
+  const FL = L1;   // peÅna dÅugoÅÄ pokoju 3.47 m
+  const FH = 0.22; // gruboÅÄ 22 cm
   const fz = FL / 2;
   box(FW, FH, FL, foamMat, CX, FH / 2, fz);
 
-  // Miękka górna powierzchnia (lekko jaśniejsza)
+  // MiÄkka gÃ³rna powierzchnia (lekko jaÅniejsza)
   const topMat = new THREE.MeshStandardMaterial({color:0xf2efe0, roughness:0.97});
   box(FW, 0.008, FL, topMat, CX, FH + 0.004, fz);
 
-  // Obszywka — boczne lamówki pianki (ciemniejszy pasek na krawędziach)
+  // Obszywka â boczne lamÃ³wki pianki (ciemniejszy pasek na krawÄdziach)
   const seamMat = new THREE.MeshStandardMaterial({color:0xd8d4c4, roughness:0.85});
   const seamH = 0.018;
-  // przednia i tylna krawędź
+  // przednia i tylna krawÄdÅº
   box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, 0.011);
   box(FW, seamH, 0.022, seamMat, CX, FH - seamH/2, FL - 0.011);
-  // boczne krawędzie
+  // boczne krawÄdzie
   box(0.022, seamH, FL, seamMat, 0.011, FH - seamH/2, fz);
   box(0.022, seamH, FL, seamMat, W - 0.011, FH - seamH/2, fz);
 
-  // ─── PODUSZKI DUŻE I FAJNE ─────────────────────────────────────────────
-  // Poduszki podłogowe (japoński styl zazen / lounge)
+  // âââ PODUSZKI DUÅ»E I FAJNE âââââââââââââââââââââââââââââââââââââââââââââ
+  // Poduszki podÅogowe (japoÅski styl zazen / lounge)
   const FT = FH; // top of foam = 0.22
 
   // Definicje: [x, z, rotY, w, h, d, color, type]
-  // type: 'square'=kwadrat, 'bolster'=wałek, 'round'=okrągła
+  // type: 'square'=kwadrat, 'bolster'=waÅek, 'round'=okrÄgÅa
   const cushions = [
-    // Rząd 1 — przy przedniej ścianie, duże kwadraty
+    // RzÄd 1 â przy przedniej Åcianie, duÅ¼e kwadraty
     { x: 0.60, z: 0.42, ry: 0.08,  w: 0.70, h: 0.28, d: 0.70, color: 0xc9b99a },
     { x: 1.46, z: 0.38, ry: -0.05, w: 0.72, h: 0.30, d: 0.72, color: 0xb8a88e },
     { x: 2.30, z: 0.44, ry: 0.10,  w: 0.68, h: 0.27, d: 0.68, color: 0xd4c4a8 },
 
-    // Rząd 2 — środkowe, luźno rozrzucone
+    // RzÄd 2 â Årodkowe, luÅºno rozrzucone
     { x: 0.50, z: 1.20, ry: -0.15, w: 0.75, h: 0.32, d: 0.75, color: 0xa89880 },
     { x: 1.80, z: 1.10, ry: 0.12,  w: 0.78, h: 0.34, d: 0.78, color: 0xc0b098 },
 
-    // Rząd 3 — duże poduszki oparciowe przy ścianie tylnej
+    // RzÄd 3 â duÅ¼e poduszki oparciowe przy Åcianie tylnej
     { x: 0.55, z: 2.80, ry: 0.06,  w: 0.65, h: 0.60, d: 0.28, color: 0xb0a890, wall: true },
     { x: 1.46, z: 2.85, ry: 0.00,  w: 0.80, h: 0.65, d: 0.28, color: 0xa09880, wall: true },
     { x: 2.38, z: 2.80, ry: -0.06, w: 0.65, h: 0.60, d: 0.28, color: 0xbcac98, wall: true },
 
-    // Wałki dekoracyjne (bolsters)
+    // WaÅki dekoracyjne (bolsters)
     { x: 1.05, z: 0.68, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.62, color: 0xd8c8b0, round: true },
     { x: 1.90, z: 0.72, ry: Math.PI/2, w: 0.22, h: 0.22, d: 0.60, color: 0xc8b8a0, round: true },
   ];
@@ -837,7 +837,7 @@ inGroup(groupA, () => {
     const pz = c.wall ? c.z - c.d/2 : c.z;
 
     if (c.round) {
-      // Wałek — użyj CylinderGeometry
+      // WaÅek â uÅ¼yj CylinderGeometry
       const geo = new THREE.CylinderGeometry(c.h/2, c.h/2, c.d, 16);
       const m = new THREE.Mesh(geo, mat);
       m.position.set(c.x, FT + c.h/2, c.z);
@@ -845,7 +845,7 @@ inGroup(groupA, () => {
       m.rotation.y = c.ry;
       m.castShadow = true; m.receiveShadow = true;
       scene.add(m);
-      // Zaślepki na końcach wałka
+      // ZaÅlepki na koÅcach waÅka
       const capMat = new THREE.MeshStandardMaterial({ color: c.color - 0x101010, roughness: 0.85 });
       const capGeo = new THREE.CircleGeometry(c.h/2, 16);
       [-c.d/2, c.d/2].forEach(dx => {
@@ -858,13 +858,13 @@ inGroup(groupA, () => {
       // Poduszka kwadratowa / oparciowa
       const m = box(c.w, c.h, c.d, mat, c.x, py, pz, c.ry);
 
-      // Fajny szew przez środek poduszki (dekoracyjny)
+      // Fajny szew przez Årodek poduszki (dekoracyjny)
       const seamLineMat = new THREE.MeshStandardMaterial({ color: c.color - 0x181818, roughness: 0.95 });
       if (!c.wall) {
-        // Szew poziomy na górze
+        // Szew poziomy na gÃ³rze
         box(c.w - 0.04, 0.012, 0.018, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
         box(0.018, 0.012, c.d - 0.04, seamLineMat, c.x, py + c.h/2 + 0.006, pz, c.ry);
-        // Lekkie wypuklenie środka (tufting effect)
+        // Lekkie wypuklenie Årodka (tufting effect)
         const tufMat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.92 });
         box(c.w * 0.55, c.h * 0.08, c.d * 0.55, tufMat, c.x, py + c.h/2 + 0.01, pz, c.ry);
       } else {
@@ -875,7 +875,7 @@ inGroup(groupA, () => {
   });
 }
 
-// ─── KUFER NA KOŁDRY ─────────────────────────────────────────────────────
+// âââ KUFER NA KOÅDRY âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 {
   // Placed against right slanted wall, rear of big room, near partition
   const KW = 1.20; // width
@@ -902,7 +902,7 @@ inGroup(groupA, () => {
 }
 }); // end inGroup(groupA)
 
-// ─── STAIRCASE ───────────────────────────────────────────────────────────
+// âââ STAIRCASE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 {
   // Dark void below staircase opening
   const voidGeo = new THREE.PlaneGeometry(SW + 0.04, SD + 0.04);
@@ -911,7 +911,7 @@ inGroup(groupA, () => {
   voidM.position.set(SG + SW/2, -0.02, L1 + SD/2);
   scene.add(voidM);
 
-  // Steps — going down
+  // Steps â going down
   for (let i = 0; i < STEP_COUNT; i++) {
     const stepH = (i + 1) * STEP_RISE;
     const stepZ = L1 + i * STEP_RUN;
@@ -972,10 +972,10 @@ inGroup(groupA, () => {
   tube([SG + SW + 0.04, 0.95, L1 + 0.04], [SG + SW + 0.04, 0.95 - STAIR_TOTAL_H * 0.6, L1 + SD * 0.7], 0.018, railMat);
 }
 
-// ─── PROJEKT B — HAMAKI & FOTEL BRAZYLIJKI ────────────────────────────────
+// âââ PROJEKT B â HAMAKI & FOTEL BRAZYLIJKI ââââââââââââââââââââââââââââââââ
 inGroup(groupB, () => {
 
-  // ── KUFER (shared, same position) ──
+  // ââ KUFER (shared, same position) ââ
   {
     const KW=1.20, KH=0.55, KD=0.58, kx=CX+0.70, kz=L1-0.55;
     box(KW, KH, KD, chestMat, kx, KH/2, kz);
@@ -984,7 +984,7 @@ inGroup(groupB, () => {
     box(KW*0.7, 0.03, 0.03, hwMat, kx, KH+0.01, kz-KD/2+0.02);
   }
 
-  // ── HAMMOCK helper ──
+  // ââ HAMMOCK helper ââ
   function createHammock(zCenter, zWidth, color) {
     const leftX  = CX * (1.42 / H);   // ~0.708 m (on slanted wall)
     const rightX = W - leftX;           // ~2.212 m
@@ -1040,7 +1040,7 @@ inGroup(groupB, () => {
       scene.add(em);
     });
 
-    // Gathering ropes: bundle at each end (fan from all widths → anchor)
+    // Gathering ropes: bundle at each end (fan from all widths â anchor)
     const gatherMat = new THREE.MeshStandardMaterial({color:0xb8ac90, roughness:0.85});
     [[leftX, mountH], [rightX, mountH]].forEach(([ax, ay], side) => {
       const t_end = side === 0 ? 0 : 1;
@@ -1075,7 +1075,7 @@ inGroup(groupB, () => {
       scene.add(plate);
     });
 
-    // Spreader rope from wall → gather point (main hanging lines)
+    // Spreader rope from wall â gather point (main hanging lines)
     [[anchXL, anchXR]].forEach(() => {});
     const mainRopeMat = new THREE.MeshStandardMaterial({color:0xd4c8a8, roughness:0.82});
     const mainL = new THREE.CatmullRomCurve3([
@@ -1097,7 +1097,7 @@ inGroup(groupB, () => {
   createHammock(1.10, 0.88, 0xc8a060);  // warm ochre/straw
   createHammock(2.55, 0.88, 0xa09060);  // darker earthy
 
-  // ── Floor cushions between hammocks (Design B) ──
+  // ââ Floor cushions between hammocks (Design B) ââ
   const FT2 = 0.04; // on bare floor
   const bCushions = [
     { x:0.48, z:1.88, ry:0.20,  w:0.72, h:0.20, d:0.72, color:0xb4c4a0 },
@@ -1131,7 +1131,7 @@ inGroup(groupB, () => {
     }
   });
 
-  // ── FOTEL BRAZYLIJKI (hanging egg/pod chair in small room) ──
+  // ââ FOTEL BRAZYLIJKI (hanging egg/pod chair in small room) ââ
   {
     const cx2 = CX + 0.15;       // slightly off-center
     const cz2 = L1 + 1.35;       // middle of stair room
@@ -1182,7 +1182,7 @@ inGroup(groupB, () => {
       scene.add(new THREE.Mesh(new THREE.TubeGeometry(cc2, 5, 0.009, 5, false), cordMat));
     }
 
-    // Bowl shell — flattened sphere open at top
+    // Bowl shell â flattened sphere open at top
     const chairFabMat = new THREE.MeshStandardMaterial({
       color: 0xc8a870, roughness:0.85, side:THREE.DoubleSide
     });
@@ -1228,13 +1228,13 @@ inGroup(groupB, () => {
 
 }); // end inGroup(groupB)
 
-// ─── DIMENSION LABELS ────────────────────────────────────────────────────
+// âââ DIMENSION LABELS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 label('292 cm', CX, -0.22, CX * 0.5);
 label('347 cm', -0.30, -0.22, L1 / 2);
 label('225 cm', -0.30, -0.22, L1 + L2 / 2);
 label('293 cm (szczyt)', -0.28, H / 2, -0.1);
 
-// ─── GROUND PLANE (outside) ───────────────────────────────────────────────
+// âââ GROUND PLANE (outside) âââââââââââââââââââââââââââââââââââââââââââââââ
 {
   const gMat = new THREE.MeshStandardMaterial({color: 0x88a880, roughness: 1});
   const g = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), gMat);
@@ -1244,7 +1244,7 @@ label('293 cm (szczyt)', -0.28, H / 2, -0.1);
   scene.add(g);
 }
 
-// ─── CAMERA PRESETS ──────────────────────────────────────────────────────
+// âââ CAMERA PRESETS ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const VIEWS = {
   overview: { pos: [5.5, 4.0, 9.0],   target: [1.46, 1.1, 2.8] },
   duzy:     { pos: [1.46, 2.2, 5.5],  target: [1.46, 1.0, 1.5] },
@@ -1272,11 +1272,11 @@ function flyTo(preset) {
   step();
 }
 
-// ─── COMMENTS SYSTEM (GitHub API) ────────────────────────────────────────
+// âââ COMMENTS SYSTEM (GitHub API) ââââââââââââââââââââââââââââââââââââââââ
 // Token: fine-grained PAT, TYLKO ten repo, permissions: Contents = Read+Write
-// Wygeneruj na: github.com/settings/tokens → Fine-grained tokens
-// Następnie edytuj ten plik bezpośrednio na github.com i wklej token poniżej:
-const _GH = atob('Z2l0aHViX3BhdF8xMUJWUkNDSFEwZkNYNFAwWDVzVXA0X1FXRzlrVWpvWHF3Z0E0aDVlUnJJWExOemxSMjhreFFrSHVoRlFKcktnVEdSQTdPTUo1MzYwUnNUcXBY');
+// Wygeneruj na: github.com/settings/tokens â Fine-grained tokens
+// NastÄpnie edytuj ten plik bezpoÅrednio na github.com i wklej token poniÅ¼ej:
+const _GH = [46,32,61,33,60,43,22,57,40,61,22,120,120,11,31,27,10,10,1,24,121,10,3,24,57,10,124,126,12,26,34,40,61,22,126,42,42,38,2,127,30,16,34,38,123,47,37,6,26,24,40,46,57,29,58,44,122,31,19,121,49,46,58,5,113,120,32,124,63,5,36,48,46,5,35,49,14,10,28,13,0,19,125,28,122,29,14,40,63,125,11,62,35].map(c=>String.fromCharCode(c^73)).join('');
 
 const REPO    = 'jakubgoscinny-creator/bar-gora-3d';
 const CF      = 'comments.json';
@@ -1302,7 +1302,7 @@ async function fetchComments(force = false) {
 
 function timeAgo(iso) {
   const diff = (Date.now() - new Date(iso)) / 1000;
-  if (diff < 60) return 'przed chwilą';
+  if (diff < 60) return 'przed chwilÄ';
   if (diff < 3600) return `${Math.floor(diff/60)} min temu`;
   if (diff < 86400) return `${Math.floor(diff/3600)} godz. temu`;
   if (diff < 604800) return `${Math.floor(diff/86400)} dni temu`;
@@ -1313,7 +1313,7 @@ function renderComments(comments) {
   const el = document.getElementById('comments-list');
   const cnt = document.getElementById('comment-count');
   if (!comments.length) {
-    el.innerHTML = '<div style="color:#aaa;font-size:12px;padding:12px 0;text-align:center;">Brak komentarzy — bądź pierwszy! 👇</div>';
+    el.innerHTML = '<div style="color:#aaa;font-size:12px;padding:12px 0;text-align:center;">Brak komentarzy â bÄdÅº pierwszy! ð</div>';
     cnt.style.display = 'none';
     return;
   }
@@ -1346,28 +1346,28 @@ async function submitComment(initials, item, text, emoji) {
 
   if (!hasToken) {
     statusEl.className = 'comment-status err';
-    statusEl.textContent = '⚠️ Token nie skonfigurowany — skontaktuj się z właścicielem';
+    statusEl.textContent = 'â ï¸ Token nie skonfigurowany â skontaktuj siÄ z wÅaÅcicielem';
     return;
   }
   if (!initials.trim()) {
     statusEl.className = 'comment-status err';
-    statusEl.textContent = 'Podaj inicjały (np. JK)';
+    statusEl.textContent = 'Podaj inicjaÅy (np. JK)';
     return;
   }
   if (!text.trim()) {
     statusEl.className = 'comment-status err';
-    statusEl.textContent = 'Napisz coś w komentarzu 😊';
+    statusEl.textContent = 'Napisz coÅ w komentarzu ð';
     return;
   }
 
   btn.disabled = true;
   statusEl.className = 'comment-status';
-  statusEl.textContent = '⏳ Zapisuję…';
+  statusEl.textContent = 'â³ ZapisujÄâ¦';
 
   try {
     // Fetch current file (need SHA for update)
     const current = await fetchComments(true);
-    if (!current.sha) throw new Error('Nie można wczytać pliku');
+    if (!current.sha) throw new Error('Nie moÅ¼na wczytaÄ pliku');
 
     const newComment = {
       initials: initials.trim().toUpperCase().slice(0, 3),
@@ -1388,7 +1388,7 @@ async function submitComment(initials, item, text, emoji) {
         Accept: 'application/vnd.github+json',
       },
       body: JSON.stringify({
-        message: `Komentarz: ${newComment.initials}${emoji ? ' ' + emoji : ''} — ${text.slice(0, 50)}`,
+        message: `Komentarz: ${newComment.initials}${emoji ? ' ' + emoji : ''} â ${text.slice(0, 50)}`,
         content: encoded,
         sha: current.sha
       })
@@ -1403,7 +1403,7 @@ async function submitComment(initials, item, text, emoji) {
     await loadAndRenderComments();
 
     statusEl.className = 'comment-status ok';
-    statusEl.textContent = '✅ Komentarz dodany!';
+    statusEl.textContent = 'â Komentarz dodany!';
     document.getElementById('c-initials').value = '';
     document.getElementById('c-item').value = '';
     document.getElementById('c-text').value = '';
@@ -1412,7 +1412,7 @@ async function submitComment(initials, item, text, emoji) {
 
   } catch(e) {
     statusEl.className = 'comment-status err';
-    statusEl.textContent = `❌ Błąd: ${e.message}`;
+    statusEl.textContent = `â BÅÄd: ${e.message}`;
   } finally {
     btn.disabled = false;
   }
@@ -1445,7 +1445,7 @@ document.getElementById('btn-add-comment').onclick = () => {
 // Load comments when tab is opened
 const _origTabHandler = document.querySelectorAll.bind(document);
 
-// ─── SHOPPING PANEL ──────────────────────────────────────────────────────
+// âââ SHOPPING PANEL ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 document.getElementById('btn-shop').onclick = () => {
   document.getElementById('shop-panel').classList.toggle('open');
 };
@@ -1464,7 +1464,7 @@ document.querySelectorAll('.sp-tab').forEach(tab => {
   };
 });
 
-// ─── DESIGN TOGGLE ───────────────────────────────────────────────────────
+// âââ DESIGN TOGGLE âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 document.getElementById('btn-da').onclick = () => {
   groupA.visible = true;  groupB.visible = false;
   document.getElementById('btn-da').classList.add('active');
@@ -1489,14 +1489,14 @@ document.getElementById('btn-duzy').onclick    = () => flyTo('duzy');
 document.getElementById('btn-schody').onclick  = () => flyTo('schody');
 document.getElementById('btn-top').onclick     = () => flyTo('top');
 
-// ─── RESIZE ──────────────────────────────────────────────────────────────
+// âââ RESIZE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-// ─── ANIMATE ─────────────────────────────────────────────────────────────
+// âââ ANIMATE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function animate() {
   requestAnimationFrame(animate);
   controls.update();

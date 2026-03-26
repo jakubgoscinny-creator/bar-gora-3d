@@ -10,9 +10,16 @@
     {
       "initials": "JG",
       "item": "Hamak",
-      "text": "System działa poprawnie!",
-      "emoji": "✅",
+      "text": "System dziaÅa poprawnie!",
+      "emoji": "â",
       "date": "2026-03-26T22:42:54.221Z"
+    },
+    {
+      "initials": "JG",
+      "item": "polubienia",
+      "text": "Działają mobilnie",
+      "emoji": "ð",
+      "date": "2026-03-26T22:44:51.680Z"
     }
   ]
 }

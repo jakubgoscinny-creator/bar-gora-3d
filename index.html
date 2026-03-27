@@ -351,6 +351,22 @@
     background: var(--accent); color: #fff; border-color: var(--accent);
   }
 
+  /* ── INFO HEADER (collapse on mobile) ── */
+  .info-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  }
+  #btn-info-toggle {
+    display: none;
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; cursor: pointer; padding: 3px 7px; line-height: 1;
+    color: var(--muted); flex-shrink: 0; transition: all .15s;
+  }
+  #btn-info-toggle:hover { background: var(--border); color: var(--text); }
+  #info.expanded #btn-info-toggle { background: var(--border); color: var(--text); }
+
+  /* ── BOTTOM BAR (desktop: invisible wrapper) ── */
+  #bottom-bar { display: contents; }
+
   /* ── DRAG HANDLE (mobile only) ── */
   .sp-drag-handle {
     display: none;
@@ -373,43 +389,57 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 520px) {
-    /* Info card — compact, respects notch */
-    #info {
-      top: max(14px, env(safe-area-inset-top));
-      left: max(14px, env(safe-area-inset-left));
-      max-width: 148px; font-size: 10.5px; padding: 10px 13px;
-    }
-    #info h2 { font-size: 13px; }
     #legend { display: none; }
     #controls { display: none; }
 
-    /* Design toggle — bottom-left */
-    #design-toggle {
+    /* ── Info card: compact pill, collapsible ── */
+    #info {
+      top: max(12px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
+      max-width: calc(100vw - 24px);
+      width: auto; padding: 9px 13px; font-size: 10.5px;
+    }
+    #info h2 { font-size: 13px; white-space: nowrap; }
+    #btn-info-toggle { display: inline-flex; }
+    #info-body { display: none; }
+    #info.expanded #info-body {
+      display: block; margin-top: 8px;
+      max-height: 55dvh; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Bottom bar ── */
+    #bottom-bar {
+      display: flex !important;
       position: fixed;
-      top: auto;
-      bottom: max(14px, env(safe-area-inset-bottom));
-      left: max(14px, env(safe-area-inset-left));
-      transform: none;
+      bottom: 0; left: 0; right: 0;
+      padding: 10px 14px max(14px, env(safe-area-inset-bottom));
+      background: rgba(250,248,245,0.94);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       z-index: 5;
     }
-    .dbtn { padding: 10px 18px; font-size: 13px; min-height: 44px; }
-
-    /* Shop button — bottom-right */
+    #design-toggle {
+      position: static; top: auto; left: auto; transform: none;
+      box-shadow: none; flex: 1;
+    }
+    .dbtn { padding: 10px 12px; font-size: 12.5px; min-height: 44px; flex: 1; text-align: center; }
     #btn-shop {
-      position: fixed;
-      bottom: max(14px, env(safe-area-inset-bottom));
-      left: auto;
-      right: max(14px, env(safe-area-inset-right));
-      padding: 12px 20px; font-size: 13px; min-height: 44px;
+      position: static; bottom: auto; left: auto;
+      padding: 11px 18px; font-size: 13px; min-height: 44px; flex-shrink: 0;
     }
 
-    /* View buttons — above bottom controls */
+    /* ── View buttons — above bottom bar ── */
     #views {
-      bottom: calc(max(14px, env(safe-area-inset-bottom)) + 62px);
+      bottom: calc(max(14px, env(safe-area-inset-bottom)) + 76px);
       right: max(10px, env(safe-area-inset-right));
       gap: 5px;
     }
-    .vbtn { padding: 9px 15px; font-size: 11.5px; min-height: 40px; }
+    .vbtn { padding: 9px 14px; font-size: 11.5px; min-height: 40px; }
 
     /* Panel — bottom sheet */
     #shop-panel {
@@ -463,31 +493,35 @@
 <body>
 
 <div id="info">
-  <h2>Bar Góra — Model 3D</h2>
-
-  <div class="section">Duży pokój (A-frame)</div>
-  <div class="dim">Szerokość podłogi: <b>292 cm</b></div>
-  <div class="dim">Długość: <b>347 cm</b></div>
-  <div class="dim">Wysokość szczytu: <b>293 cm</b></div>
-  <div class="dim">Kąt nachylenia ścian: <b>60°</b></div>
-
-  <div class="section">Mały pokój (schody)</div>
-  <div class="dim">Głębokość: <b>225 cm</b></div>
-  <div class="dim">Schody: <b>68 cm</b> szer.</div>
-  <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
-
-  <div id="info-a">
-    <div class="section">Projekt A — Strefa Zen</div>
-    <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
-    <div class="dim">Poduszki lounge + wałki</div>
-    <div class="dim">Kufer na kołdry</div>
+  <div class="info-header">
+    <h2>Bar Góra — Model 3D</h2>
+    <button id="btn-info-toggle" aria-label="Szczegóły wymiarów">📐</button>
   </div>
-  <div id="info-b" style="display:none">
-    <div class="section">Projekt B — Hamaki &amp; Relaks</div>
-    <div class="dim">2× hamak tkany (duży pokój)</div>
-    <div class="dim">Poduszki podłogowe</div>
-    <div class="dim">Fotel brazylijki (mały pokój)</div>
-    <div class="dim">Kufer na kołdry</div>
+  <div id="info-body">
+    <div class="section">Duży pokój (A-frame)</div>
+    <div class="dim">Szerokość podłogi: <b>292 cm</b></div>
+    <div class="dim">Długość: <b>347 cm</b></div>
+    <div class="dim">Wysokość szczytu: <b>293 cm</b></div>
+    <div class="dim">Kąt nachylenia ścian: <b>60°</b></div>
+
+    <div class="section">Mały pokój (schody)</div>
+    <div class="dim">Głębokość: <b>225 cm</b></div>
+    <div class="dim">Schody: <b>68 cm</b> szer.</div>
+    <div class="dim">Odstęp schody–ściana: <b>50 cm</b></div>
+
+    <div id="info-a">
+      <div class="section">Projekt A — Strefa Zen</div>
+      <div class="dim">Mata piankowa: <b>292 × 347 cm × 22 cm</b></div>
+      <div class="dim">Poduszki lounge + wałki</div>
+      <div class="dim">Kufer na kołdry</div>
+    </div>
+    <div id="info-b" style="display:none">
+      <div class="section">Projekt B — Hamaki &amp; Relaks</div>
+      <div class="dim">2× hamak tkany (duży pokój)</div>
+      <div class="dim">Poduszki podłogowe</div>
+      <div class="dim">Fotel brazylijki (mały pokój)</div>
+      <div class="dim">Kufer na kołdry</div>
+    </div>
   </div>
 </div>
 
@@ -509,11 +543,6 @@
   <div><span class="dot" style="background:#88bbdd; opacity:0.7"></span> Okno</div>
 </div>
 
-<div id="design-toggle">
-  <button class="dbtn active" id="btn-da">🛏 Projekt A</button>
-  <button class="dbtn" id="btn-db">🪢 Projekt B</button>
-</div>
-
 <div id="views">
   <button class="vbtn" id="btn-overview">Widok ogólny</button>
   <button class="vbtn" id="btn-duzy">Duży pokój</button>
@@ -521,7 +550,13 @@
   <button class="vbtn" id="btn-top">Z góry</button>
 </div>
 
-<button id="btn-shop">🛒 Lista zakupowa</button>
+<div id="bottom-bar">
+  <div id="design-toggle">
+    <button class="dbtn active" id="btn-da">🛏 Projekt A</button>
+    <button class="dbtn" id="btn-db">🪢 Projekt B</button>
+  </div>
+  <button id="btn-shop">🛒 Lista zakupowa</button>
+</div>
 
 <div id="panel-overlay"></div>
 
@@ -1870,6 +1905,11 @@ document.querySelectorAll('.item-cmt-btn').forEach(btn => {
   };
 });
 
+// ─── INFO CARD TOGGLE (mobile) ───────────────────────────────────────────
+document.getElementById('btn-info-toggle').onclick = () => {
+  document.getElementById('info').classList.toggle('expanded');
+};
+
 // ─── SHOPPING PANEL ──────────────────────────────────────────────────────
 const _panel = document.getElementById('shop-panel');
 const _overlay = document.getElementById('panel-overlay');
@@ -1877,6 +1917,8 @@ const _overlay = document.getElementById('panel-overlay');
 function openPanel() {
   _panel.classList.add('open');
   _overlay.classList.add('show');
+  // auto-collapse info card when panel opens on mobile
+  if (window.innerWidth <= 520) document.getElementById('info').classList.remove('expanded');
 }
 function closePanel() {
   _panel.classList.remove('open');

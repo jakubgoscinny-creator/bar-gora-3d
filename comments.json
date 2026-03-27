@@ -8,5 +8,19 @@
       "date": "2026-03-26T23:52:28.695Z"
     }
   ],
-  "polls": []
+  "polls": [
+    {
+      "id": "mn8mxz65",
+      "question": "Który projekt wybieramy?",
+      "options": [
+        "Projekt A",
+        "Projekt B",
+        "To i to"
+      ],
+      "votes": {},
+      "endDate": "2026-04-05T23:59:59.000Z",
+      "createdBy": "JG",
+      "createdAt": "2026-03-27T08:24:30.029Z"
+    }
+  ]
 }
